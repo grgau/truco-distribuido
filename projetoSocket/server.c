@@ -26,7 +26,7 @@ int main(int argc, char  *argv[ ]) {
     }
 
     server_addr.sin_family = AF_INET;         
-    server_addr.sin_port = htons(5000);     
+    server_addr.sin_port = htons(14000);     
     server_addr.sin_addr.s_addr = INADDR_ANY; 
     bzero(&(server_addr.sin_zero),8); 
     
@@ -51,12 +51,13 @@ int main(int argc, char  *argv[ ]) {
         while (1) {
 
             //gets(send_data);
-            //send(connected, send_data, strlen(send_data), 0);
+            strcpy(send_data,"MESA, Paim, 1.1.1.1, 1, Azei, 1.1.1.2, 2, Greg, 1.1.1.3, 3, Gerv, 1.1.1.4, 4");
+            send(connected, send_data, strlen(send_data), 0);
 
             bytes_recv = recv(connected, recv_data,1024,0);
             recv_data[bytes_recv] = '\0';
 
-            printf("\nClient:%s" , recv_data);
+            //printf("\nClient:%s" , recv_data);
 
             fflush(stdout);
 

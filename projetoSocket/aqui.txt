@@ -1,0 +1,91 @@
+
+GERV 9/5
+
+    Então, fiz bibliotecas pra: dados recebidos e criação de sockets
+                                separação da string recebida em substrings
+                                armazenamento de players
+
+               programas pra:   client.c onde deve ficar a logica
+                                server.c server genericão msm só pra testar
+
+    O código tá enviando uma string "teste" pro server só pra manter o fluxo e receber do server os testes
+    Tem que arrumar o fluxo, tipo, como ele vai ficar escutando pra ver se recebeu mensagem nova e tal
+    De preferencia fazer primeiro ele ficar só escutando e recebendo pra fazermos todos os casos de recebimento
+    E continuar as funções pra cada tipo de mensagem recebida
+    Fiz o tratamento pra mensagem MESA pra mostrar pra vcs como eu acho que deve ser esse tratamento
+
+    Qualquer coisa chamem <3
+    E me falem tbm se eu fiz algo errado na configuração, na parte de rede msm
+
+
+RODAR
+    
+    gcc -o server server.c
+    ./server
+
+    gcc -o client client.c
+    ./client
+
+
+ESPECIFICAÇÃO
+
+    Projeto: Partida de truco :::
+     
+    Cada grupo deve desenvolver um jogador da mesa, usando sockets em C, sem identificação de quem será parceiro de quem (isso será definido pelo servidor, no início de cada partida). Todo jogador terá conhecimento das cartas jogadas pelos demais jogadores, permitindo sua tomada de decisão.
+     
+    Dado que os processos são inerentemente rápidos, cada jogada deve ser precedida por uma espera de 5 segundos, para que seja possível identificar o que está ocorrendo.
+     
+    Todo jogador deve mostrar na sua saída padrão (terminal de vídeo) o que está ocorrendo a cada jogada.
+     
+    Ao final de cada partida (alguma dupla somar 12 pontos), o servidor dará reinício alterando a ordem dos jogadores, assim as duplas eventualmente serão alteradas.
+     
+    O endereço IP do servidor e dos jogadores deverá ser informado ao começar a primeira partida, sendo o endereço do servidor recebido como parâmetro da linha de comando.
+     
+    O jogo deve começar com todos os jogadores enviando ao servidor o seu nome, endereço IP e porta para comunicação com demais jogadores, na forma:
+       ≪ "ID", endereçoIP, porta ≫
+
+    O servidor fará então o broadcast dessas informações assim que receber os dados dos quatro jogadores, sendo que ele indicará nesse momento a posição de cada jogador na mesa, sendo que id1 será parceiro de id3 e id2 será parceiro de id4. A mensagem terá a forma:
+       ≪ "MESA", id1, IP1, porta1, id2, IP2, porta2, id3, IP3, porta3, id4, IP4, porta4 ≫
+
+    Essa mensagem deve ser usada pelos jogadores para identificar com quem devem conversar a cada momento e quem é seu parceiro, para poder contar a pontuação de cada mão de jogo.
+     
+
+    A porta de comunicação com o servidor será a 14000. Entre jogadores será definida pela mensagem inicial enviada por cada um deles.
+     
+
+    Nas mensagens descritas abaixo, se considera que as em vermelho são originadas pelo servidor, as em azul são originadas por um jogador e enviadas ao servidor e as em preto são trocadas entre os jogadores.
+     
+
+    Mensagens possíveis:
+
+        Notifica fim de rodada, com conteúdo dado por
+        ≪ "FR", nomeganhador, pontos ≫ servidor para jogadores
+        Passa cartas, individualmente para cada jogador, sendo
+        ≪ "CARTA", carta1, carta2, carta3 ≫ servidor para jogadores
+        Passa o vira e indica primeiro jogador, broadcast para os quatro jogadores, sendo
+        ≪ "VIRA", carta, identificador ≫ servidor para jogadores
+        Jogada, broadcast para os três jogadores e servidor, sendo:
+            Mostra carta, sendo:
+            ≪ "MC", carta ≫ jogador para servidor
+            Esconde carta, sendo:
+            ≪ "EC", NULL ≫ jogador para os demais jogadores
+            ≪ "EC", carta ≫ jogador para o servidor
+            Truca, sendo:
+            ≪ "TRUCO", NULL ≫ jogador para jogadores e servidor
+            Aceita o truco, sendo:
+            ≪ "DESCE", NULL ≫ jogador para jogadores e servidor
+            Desiste do truco, sendo:
+            ≪ "FORA", NULL ≫ jogador para jogadores e servidor
+
+    Qualquer que seja a jogada é preciso que o jogador se "desfaça" de uma carta, ou apresentando ela aos demais ou devolvendo ao servidor
+
+    No caso de ocorrer truco, não será possível pedir 6. Só é possível aceitar ou desistir.
+
+    Para que o truco seja aceito é preciso que os dois adversários entrem em acordo, o que significa que devem ser recebidas duas respostas ao truco.
+
+    Todas as mensagens são compostas apenas por strings de caracteres separados por vírgulas (até mesmo o valor de "pontos").
+
+    As cartas serão representadas por uma letra ('O', 'C', 'E' e 'P') seguida de um número, sendo que ás=1, dama=8, valete=9 e rei=10. Assim, por exemplo, o sete de copas seria representado por "C7", já o ás de espadas seria "E1".
+
+
+    PRAZO PARA ENTREGA: 05/06/2018, até 23h59 por e-mail com o código fonte do jogador. 

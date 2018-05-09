@@ -8,6 +8,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <time.h>
+
+#include "subs.h"
+#include "player.h"
 
 #define NUM_BYTES 1024
 
@@ -17,7 +21,7 @@ struct sockaddr_in server_addr;
 int bytes_recv;  
 char send_data[NUM_BYTES],recv_data[NUM_BYTES];
 
-int createSocket(char *hostname) {
+int createSocket(char *hostname, int port) {
 
 	host = gethostbyname(hostname);
 
@@ -27,7 +31,7 @@ int createSocket(char *hostname) {
     }
 
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(5000);   
+    server_addr.sin_port = htons(port);   
     server_addr.sin_addr = *((struct in_addr *)host->h_addr);
     bzero(&(server_addr.sin_zero),8); 
     
@@ -39,13 +43,17 @@ int createSocket(char *hostname) {
     return newSocket;
 }
 
-void receiveData(int sock) {
+//Função que trata dados recebidos
+subs* receiveData(int sock,subs *message) {
+
 	bytes_recv=recv(sock,recv_data,NUM_BYTES,0);
     recv_data[bytes_recv] = '\0';
 
-    printf("\nServer:%s \n" , recv_data);
+    message = structureMessage(message,recv_data,bytes_recv);
 
-    /*
+    return message;
+
+    /* CODIGO INICIAL SLIDES
     if (strcmp(recv_data,"q") == 0 || strcmp(recv_data,"Q") == 0) {
         close(sock);
         exit(1);
@@ -55,9 +63,10 @@ void receiveData(int sock) {
     */
 }
 
+//Função que trata dados a serem enviados (VAI MUDAR MUITO AINDA) 
 void sendData(int sock) {
 
-	gets(send_data);
+	strcpy(send_data,"teste");
 	send(sock,send_data,strlen(send_data), 0);
 
 	/*
@@ -73,3 +82,4 @@ void sendData(int sock) {
 	}
 	*/
 }
+
