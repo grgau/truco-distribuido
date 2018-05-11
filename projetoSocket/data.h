@@ -11,7 +11,6 @@
 #include <time.h>
 
 #include "subs.h"
-#include "player.h"
 
 #define NUM_BYTES 1024
 

@@ -51,7 +51,7 @@ int main(int argc, char  *argv[ ]) {
         while (1) {
 
             //gets(send_data);
-            strcpy(send_data,"MESA, Paim, 1.1.1.1, 1, Azei, 1.1.1.2, 2, Greg, 1.1.1.3, 3, Gerv, 1.1.1.4, 4");
+            strcpy(send_data,"CARTA,E5,O9,P1");
             send(connected, send_data, strlen(send_data), 0);
 
             bytes_recv = recv(connected, recv_data,1024,0);
