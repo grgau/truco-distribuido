@@ -65,6 +65,8 @@ int main(int argc, char *argv[ ]) {
 
         //Destruindo mensagem recebida após cada interação
         message = destroyMessage(message);
+
+        sendData("DESCE",carta[0],servidor);
         //tá enviando dados sozinho pra manter recebendo
         sendData(servidor);
 

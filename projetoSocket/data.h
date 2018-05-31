@@ -63,9 +63,17 @@ subs* receiveData(int sock,subs *message) {
 }
 
 //Função que trata dados a serem enviados (VAI MUDAR MUITO AINDA) 
-void sendData(int sock) {
+void sendData(char *comando, card carta,int sock) {
 
-	strcpy(send_data,"teste");
+    char message[11] = comando;
+    int len = (int) strlen(comando);
+
+    //strcpy(message,comando);
+    strcat(message,",");
+    strcat(message,carta.suit);
+    strcat(message,carta.card);
+
+	strcpy(send_data,message);
 	send(sock,send_data,strlen(send_data), 0);
 
 	/*
