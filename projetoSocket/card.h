@@ -3,6 +3,10 @@ typedef struct card {
 	char suit;
 } card;
 
+void cardString(char *card,int number) {
+	sprintf(card,"%d",number);
+}
+
 int cardNumber(char *card) {
 	char number[3];
 	int i=1;
@@ -16,13 +20,20 @@ int cardNumber(char *card) {
 	return atoi(number);
 }
 
-void receiveCards(subs *message,card *cards, int qtdd) {
+void receiveCards(subs *message,card *cards) {
 	int i;
-	for (i=0;i<qtdd;i++) {
+	for (i=0;i<3;i++) {
 		cards[i].suit = message->info[0];
 		cards[i].card = cardNumber(message->info);
 		message = message->prox;
 	}
+}
+
+void receiveVira(subs *message,card vira,char *IDStart) {
+	vira.suit = message->info[0];
+	vira.card = cardNumber(message->info);
+
+	strcpy(IDStart,message->prox->info);
 }
 
 void displayCards(card *cards) {
@@ -33,6 +44,6 @@ void displayCards(card *cards) {
 	}
 }
 
-void displayVira(card *vira) {
-	printf("\nVira:\n  Card: %d\n  Suit: %c\n\n",vira[i].card,vira[i].suit);
+void displayVira(card vira) {
+	printf("\nVira:\n  Card: %d\n  Suit: %c\n\n",vira.card,vira.suit);
 }

@@ -1,5 +1,4 @@
 #include "data.h"
-#include "card.h"
 #include "player.h"
 
 int main(int argc, char *argv[ ]) {
@@ -18,11 +17,13 @@ int main(int argc, char *argv[ ]) {
 
     card vira;
 
+    char *IDStart;
+
     while(1) {
     	//Recebendo mensagem
         message = receiveData(servidor,message);
 
-        //Printando mensagem desestruturada mesmo
+        //Printando mensagem
         displayMessage(message);
 
         //Switch de tipos de mensagens
@@ -33,11 +34,11 @@ int main(int argc, char *argv[ ]) {
 
         }
         else if(strcmp(message->info,"CARTA") == 0) {
-        	receiveCards(message->prox,cards,3);
+        	receiveCards(message->prox,cards);
         	displayCards(cards);
         }
         else if(strcmp(message->info,"VIRA") == 0) {
-        	receiveCards(message->prox,vira,1);
+        	receiveVira(message->prox,vira,IDStart);
         	displayVira(vira);
         }
         else if(strcmp(message->info,"FR") == 0) {
@@ -66,9 +67,8 @@ int main(int argc, char *argv[ ]) {
         //Destruindo mensagem recebida após cada interação
         message = destroyMessage(message);
 
-        sendData("DESCE",carta[0],servidor);
+        sendData("DESCE",NULL,0,servidor);
         //tá enviando dados sozinho pra manter recebendo
-        sendData(servidor);
 
         sleep(10);
     }

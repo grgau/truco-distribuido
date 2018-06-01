@@ -11,6 +11,7 @@
 #include <time.h>
 
 #include "subs.h"
+#include "card.h"
 
 #define NUM_BYTES 1024
 
@@ -51,42 +52,31 @@ subs* receiveData(int sock,subs *message) {
     message = structureMessage(message,recv_data,bytes_recv);
 
     return message;
-
-    /* CODIGO INICIAL SLIDES
-    if (strcmp(recv_data,"q") == 0 || strcmp(recv_data,"Q") == 0) {
-        close(sock);
-        exit(1);
-    }
-    else
-        printf("\nReceived data = %s " , recv_data);
-    */
 }
 
 //Função que trata dados a serem enviados (VAI MUDAR MUITO AINDA) 
-void sendData(char *comando, card carta,int sock) {
+void sendData(char *comando, card *cards,int index,int sock) {
+    
+    char message[15];
+    char *suit; 
+    char card[2];
 
-    char message[11] = comando;
-    int len = (int) strlen(comando);
-
-    //strcpy(message,comando);
+    strcpy(message,comando);
     strcat(message,",");
-    strcat(message,carta.suit);
-    strcat(message,carta.card);
 
+    if(cards != NULL) {
+        suit = &cards[index].suit;
+
+        cardString(card,cards[index].card);
+
+        strcat(message,suit);
+        strcat(message,card);
+    }
+    else {
+        strcat(message,"NULL");
+    }
+    
 	strcpy(send_data,message);
 	send(sock,send_data,strlen(send_data), 0);
-
-	/*
-	printf("\nSEND (q or Q to quit) : ");
-    gets(send_data);
-        
-	if (strcmp(send_data,"q") != 0 && strcmp(send_data,"Q") != 0)
-		send(sock,send_data,strlen(send_data), 0); 
-	else {
-		send(sock,send_data,strlen(send_data), 0);   
-		close(sock);
-		exit(1);
-	}
-	*/
 }
 

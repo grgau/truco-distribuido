@@ -1,31 +1,79 @@
+Gerv 01/06 {
+    Estruturas
+        card: estrutura de uma carta
+            card->card = número da carta
+            card->suit = naipe da carta
 
-GERV 9/5
+        player: estrutura de cada um dos players
+            player->ID = id do player no jogo
+            player->ip = ip relacionado ao player
+            player->port = porta usada para conexão com o player
 
-    Então, fiz bibliotecas pra: dados recebidos e criação de sockets
-                                separação da string recebida em substrings
-                                armazenamento de players
-
-               programas pra:   client.c onde deve ficar a logica
-                                server.c server genericão msm só pra testar
-
-    O código tá enviando uma string "teste" pro server só pra manter o fluxo e receber do server os testes
-    Tem que arrumar o fluxo, tipo, como ele vai ficar escutando pra ver se recebeu mensagem nova e tal
-    De preferencia fazer primeiro ele ficar só escutando e recebendo pra fazermos todos os casos de recebimento
-    E continuar as funções pra cada tipo de mensagem recebida
-    Fiz o tratamento pra mensagem MESA pra mostrar pra vcs como eu acho que deve ser esse tratamento
-
-    Qualquer coisa chamem <3
-    E me falem tbm se eu fiz algo errado na configuração, na parte de rede msm
+        subs: estrutura de uma substring (usada para separar a mensagem recebida)
+            subs->info = texto em si
+            subs->prox = ponteiro para próxima subs da mensagem
 
 
-RODAR
-    
-    gcc -o server server.c
-    ./server
+    Recebimento de mensagens
 
-    gcc -o client client.c
-    ./client
+    --- createSocket(char *ip,int port);
+            ip: ip da conexão
+            port: porta da conexão
 
+            retorna socket criado
+                ex: sock = createSocket("127.0.0.1",14000);
+
+
+    --- receiveData(int sock,subs *message);
+            sock: socket de quem receberá mensagem
+            message: ponteiro para estruturar mensagem
+
+            retorna inicio da mensagem
+                ex: message = receiveData(sock,message);
+
+
+    --- receivePlayers(subs *message,player *players);
+            message: primeiro nó da mensagem com informação de players
+            players: vetor de players
+
+            não retorna nada
+                ex: receivePlayers(message->prox,players);
+
+
+    --- receiveCards(subs *message,card *cards);
+            message: primeiro nó da mensagem com informação de cartas
+            cards: vetor de cartas
+
+            não retorna nada
+                ex: receiveCard(message->prox,cards);
+
+
+    --- receiveVira(subs *message,card *vira, char *IDStart);
+            message: primeiro nó da mensagem com informação da vira
+            vira: carta vira
+            IDStart: id do jogador que inicia (virá da mensagem)
+
+            não retorna nada
+                ex: receiveVira(message->prox,vira,IDStart);
+
+    Envio de mensagens
+
+    --- sendData(char *comando,card *cards,int index, int sock);
+            comando: comando dado (ex: DESCE,MC,EC,TRUCO)
+            carta: vetor de cartas (ou NULL se não jogará carta)
+            index: indice da carta a ser jogada
+            sock: socket para o qual a mensagem irá
+
+            não retorna nada
+                ex: sendData("MC",cards,2,dealer);
+
+    Rodar
+        gcc -o server server.c
+        ./server
+
+        gcc -o client client.c
+        ./client
+}
 
 ESPECIFICAÇÃO
 

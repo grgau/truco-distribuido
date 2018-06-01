@@ -57,38 +57,11 @@ int main(int argc, char  *argv[ ]) {
             bytes_recv = recv(connected, recv_data,1024,0);
             recv_data[bytes_recv] = '\0';
 
-            //printf("\nClient:%s" , recv_data);
+            printf("\nClient:%s" , recv_data);
 
-            fflush(stdout);
-
-            /*
-            printf ("\n SEND (q or Q to quit) : ");
-            gets(send_data);
-            if (strcmp(send_data,"q") ==0 || strcmp(send_data,"Q") ==0) {
-                send(connected, send_data, strlen(send_data), 0); 
-                close(connected);
-                break;
-            }
-            else
-                send(connected, send_data, strlen(send_data), 0);
-
-            bytes_recv = recv(connected, recv_data,1024,0);
-            recv_data[bytes_recv] = '\0';
-            
-            if (strcmp(recv_data,"q") ==0 || strcmp(recv_data,"Q") ==0) { 
-                close(connected);
-                break;
-            }
-            else 
-                printf("\nClient:%s " , recv_data);
-            
-            fflush(stdout);
-
-            */
-            
+            fflush(stdout);  
         }
     }
-
     close(sock);
     return 0;
 } 
