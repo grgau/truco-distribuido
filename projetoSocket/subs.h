@@ -41,28 +41,27 @@ subs* destroyMessage(subs *message) {
 		message = destroyMessage(message->prox);
 		free(message);
 	}
-
 	return NULL;
 }
 
 //Função que percorre string recebida preenchendo message
 subs* structureMessage(subs *message,char recv_data[],int bytes_recv) {
-    int pos = 0, i;
-    char substring[15];
+  int pos = 0, i;
+  char substring[15];
 
-    while(pos < bytes_recv) {
-        i = 0;
+  while(pos < bytes_recv) {
+    i = 0;
 
-        while(recv_data[pos] != ',' && recv_data[pos] != '\0') {
-            substring[i] = recv_data[pos];
-            pos++;
-            i++;
-        }
-        pos++;
-        substring[i] = '\0';
-
-        message = newSubs(message,substring);
+    while(recv_data[pos] != ',' && recv_data[pos] != '\0') {
+      substring[i] = recv_data[pos];
+      pos++;
+      i++;
     }
+    pos++;
+    substring[i] = '\0';
 
-    return message;
+    message = newSubs(message,substring);
+  }
+
+  return message;
 }

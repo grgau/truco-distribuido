@@ -10,11 +10,11 @@
 
 int main(int argc, char  *argv[ ]) {
 
-    int sock, connected, bytes_recv, true = 1;  
-    char send_data [1024] , recv_data[1024];       
-    struct sockaddr_in server_addr,  client_addr;    
+    int sock, connected, bytes_recv, true = 1;
+    char send_data [1024] , recv_data[1024];
+    struct sockaddr_in server_addr, client_addr;
     int sin_size;
-    
+
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("Socket");
         exit(1);
@@ -25,11 +25,11 @@ int main(int argc, char  *argv[ ]) {
         exit(1);
     }
 
-    server_addr.sin_family = AF_INET;         
-    server_addr.sin_port = htons(14000);     
-    server_addr.sin_addr.s_addr = INADDR_ANY; 
-    bzero(&(server_addr.sin_zero),8); 
-    
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(14000);
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    bzero(&(server_addr.sin_zero),8);
+
     if (bind(sock, (struct sockaddr *)&server_addr,sizeof(struct sockaddr)) == -1) {
         perror("Unable to bind");
         exit(1);
@@ -42,26 +42,26 @@ int main(int argc, char  *argv[ ]) {
 
     printf("\nTCPServer Waiting for client on port 5000");
     fflush(stdout);
-    
+
     while(1) {
         sin_size = sizeof(struct sockaddr_in);
         connected = accept(sock, (struct sockaddr *)&client_addr, &sin_size);
-        printf("\nGot connection from (%s , %d)\n", inet_ntoa(client_addr.sin_addr), 
-        ntohs(client_addr.sin_port));
+        printf("\nGot connection from (%s , %d)\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
         while (1) {
 
             //gets(send_data);
-            strcpy(send_data,"CARTA,E5,O9,P1");
-            send(connected, send_data, strlen(send_data), 0);
+            //strcpy(send_data,"CARTA,E5,O9,P1");
+            //send(connected, send_data, strlen(send_data), 0);
 
             bytes_recv = recv(connected, recv_data,1024,0);
             recv_data[bytes_recv] = '\0';
 
             printf("\nClient:%s" , recv_data);
+            sleep(20);
 
-            fflush(stdout);  
+            fflush(stdout);
         }
     }
     close(sock);
     return 0;
-} 
+}

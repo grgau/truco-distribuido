@@ -1,3 +1,14 @@
+Greg 16/08 {
+  Adicionei na pasta o código de servidor do Aleardo "myserver.c", precisa de 4 conexões pra começar a funcionar
+    -> Eu abro 4 terminais mesmo.
+  Função de entrar no jogo "startGame", retorna struct tipo player "myPlayer"
+  Função de descobrir quem é parceiro "whoIsMyPartner", retorna struct tipo player "myPartner"
+  Função de aceitar conexão de outros jogadores "createPlayersListen" (virando tipo um servidor de outros), recebe port_listening estou ouvindo (valor aleatório)
+    -> Relacionado à aquela especificação de << MC, Carta >>
+  Criando um socket com cada jogador quando recebe mensagem "MESA" (atuais linhas 50, 51 e 52 de client.c)
+    -> Necessário para posteriormente falar qual carta vai ser jogada na mesa
+}
+
 Gerv 01/06 {
     Estruturas
         card: estrutura de uma carta
@@ -136,4 +147,4 @@ ESPECIFICAÇÃO
     As cartas serão representadas por uma letra ('O', 'C', 'E' e 'P') seguida de um número, sendo que ás=1, dama=8, valete=9 e rei=10. Assim, por exemplo, o sete de copas seria representado por "C7", já o ás de espadas seria "E1".
 
 
-    PRAZO PARA ENTREGA: 05/06/2018, até 23h59 por e-mail com o código fonte do jogador. 
+    PRAZO PARA ENTREGA: 05/06/2018, até 23h59 por e-mail com o código fonte do jogador.

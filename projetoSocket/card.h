@@ -10,7 +10,7 @@ void cardString(char *card,int number) {
 int cardNumber(char *card) {
 	char number[3];
 	int i=1;
-	
+
 	while(card[i] != '\0') {
 		number[i-1] = card[i];
 		i++;
@@ -29,11 +29,11 @@ void receiveCards(subs *message,card *cards) {
 	}
 }
 
-void receiveVira(subs *message,card vira,char *IDStart) {
+card receiveVira(subs *message, card vira, char *IDStart) {
 	vira.suit = message->info[0];
 	vira.card = cardNumber(message->info);
-
 	strcpy(IDStart,message->prox->info);
+	return vira;
 }
 
 void displayCards(card *cards) {
@@ -44,6 +44,6 @@ void displayCards(card *cards) {
 	}
 }
 
-void displayVira(card vira) {
-	printf("\nVira:\n  Card: %d\n  Suit: %c\n\n",vira.card,vira.suit);
+void displayVira(card vira, char *IDStart) {
+	printf("\nVira:\n  Card: %d\n  Suit: %c\n  IDStart: %s\n\n", vira.card, vira.suit, IDStart);
 }
