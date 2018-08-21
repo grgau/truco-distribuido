@@ -1,3 +1,28 @@
+Azei 21/08 {
+  Feitas funções para ordenar as cartas na mão de acordo com a potencia/força no jogo. É preciso revisar pra ver se acertei os naipes pfvr.
+  Agora, quando for descartar uma carta, apenas fazer um for, copiando as cartas mais à frente para o lugar.
+  Por exemplo, usando a "potencia" como abstração:
+    10, 5, 3   -> descarto a 5
+    10, 3 | 3  -> copiei o 3 pro lugar do 5 e setei o número de cartas na mão pra 2
+    10, 3 | 3  -> descarto a 3
+    10 | 3, 3  -> copiei a 3 pro lugar da 3 (operação padrão, mesmo sendo redundante neste caso), setei o número de cartas na mão pra 1
+
+  outro exemplo:
+    10, 5, 3   -> descarto a 10
+    5, 3 | 3   -> copio a 5 pro lugar do 10, o 3 pro lugar do 5 e seto o número de cartas na mão pra 2
+    5, 3 | 3   -> descarto a 5
+    3 | 3, 3   -> copio a 3 pro lugar da 5 e seto o número de cartas na mão pra 1
+
+  por fim:
+    10, 5, 3   -> descarto a 3
+    10, 5 |3   -> caso especial, tratado apenas mudando o número de cartas na mão
+    ...
+    ...
+
+  Além disso, adicionei uns printfs pra fazer debug e entender como as coisas estavam funcionando.
+  Obs: Ainda não consegui arrumar o bug de aparecer um caractere a mais em algumas cartas, mas identifiquei que isto ocorre quando uma das cartas é 10.
+}
+
 Paim 20/08 {
 
 feito a primeira rodada do truco.

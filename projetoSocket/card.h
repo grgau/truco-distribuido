@@ -33,15 +33,29 @@ void receiveCards(subs *message,card *cards) {
 
 //Retorna a "potencia" da carta "carta" baseado no valor da carta "vira".
 int getPotencia(card carta, card vira){
-	int potencia, potVira;
+	int potencia, potVira, potManilha;
 
-	potVira = (vira.card + 6) % 10;
+	// potVira = (vira.card + 6) % 10;
 	potencia = (carta.card + 6) %10; 						//Assim o 4 tem valor de 0, 5 tem valor de 1, etc, seguindo pela ordem de "potencia".
-	if(potencia ==  (potVira + 1) )								//Verifica se a carta atual é manilha{
+	potManilha = (vira.card + 7) % 10;
+	if(potencia ==  (potManilha)){								//Verifica se a carta atual é manilha{
 		potencia = 9;
+		switch((carta.suit)){
+			case 'P':
+				potencia++;
+			case 'C':
+				potencia++;
+			case 'E':
+				potencia++;
+			case 'O':
+				potencia++;
+		}
+	}
 		else
-		if(potVira < potencia)												//Se já passou da "potencia" da manilha, as cartas para frente possuem um grau a menos de potencia.
-		potencia--;
+		if(potManilha <= potencia){												//Se já passou da "potencia" da manilha, as cartas para frente possuem um grau a menos de potencia.
+			// printf("Entrou aqui!");
+			potencia--;
+		}
 		return potencia;
 	}
 
@@ -49,19 +63,24 @@ void organizeCards(card *cards, card vira){
 	card aux;
 	int i, j, potCartaAtual, potAux, indice;
 
-	potAux = getPotencia(cards[0], vira);
-	printf("Carta %c%d - Potencia : %d", cards[0].suit, cards[0].card, potAux);
+	// potAux = getPotencia(cards[0], vira);
 
 	// Ordena as cartas
 	for(i = 0; i<3; i++){
+		potAux = getPotencia(cards[i], vira);
+		indice = i;
+		for(j = 0; j < 3; j++){												//Esse for serve só pra printar a ordem de potencia atual das cartas na ordenação pra eu ver se tava certo. Pode comentar/tirar se precisar.
+			printf("Carta %c%d - Potencia : %d\n", cards[j].suit, cards[j].card, getPotencia(cards[j], vira));
+		}
 		for(j = i; j < 3; j++){
 			potCartaAtual = getPotencia(cards[j], vira);
-			printf("Atualmente na carta %d\n", j);
 			if(potCartaAtual > potAux){
 				potAux = potCartaAtual;
 				indice = j;
 			}
 		}
+
+		printf("O indice que será trocado é: %d\n", indice);
 		aux.card = cards[i].card;
 		aux.suit = cards[i].suit;
 		cards[i].card = cards[indice].card;
