@@ -255,6 +255,7 @@ int main(int argc, char *argv[])
   send_data[strlen(send_data)-1] = '\0';
   for (i=0; i<4; i++)
   { send(connected[i],send_data,strlen(send_data), 0);
+    printf("%s\n", send_data);
     fflush(stdout);
     sleep(1);
   }
@@ -288,6 +289,7 @@ puts("\n STARTING NEW ROUND (with new cards) \n\n");
       strcat(send_data,cartas_jogadas[j+i*3].carta);
     }
     send(connected[i],send_data,strlen(send_data), 0);
+    printf("%s\n", send_data);
     fflush(stdout);
   }
   sleep(1);
@@ -310,8 +312,10 @@ puts("\n STARTING NEW ROUND (with new cards) \n\n");
 printf("vira is %s \n",cartas_jogadas[12].carta);
     strcat(send_data,",");
     strcat(send_data,player[mao].id);
-    for (i=0; i<4; i++)
+    for (i=0; i<4; i++){
        send(connected[i],send_data,strlen(send_data), 0);
+       printf("%s\n", send_data);
+    }
     fflush(stdout);
   }
 
@@ -344,14 +348,17 @@ printf("Round %d: received card %s from player %s \n",k+1,recv_data, player[who]
                       strcat(send_data,"NULL");
                   for (i=0; i<4; i++)
                       { send(connected[i],send_data,strlen(send_data), 0);
+                        printf("%s\n", send_data);
                         fflush(stdout);
                         sleep(1);
                       }
                 }
               else // card wasn't validated
                 { strcpy(send_data,"Someone is cheating!!");
-                  for (i=0; i<4; i++)
+                  for (i=0; i<4; i++){
                       send(connected[i],send_data,strlen(send_data), 0);
+                      printf("%s\n", send_data);
+                  }
                   exit(0);
                 }
           }
@@ -360,6 +367,7 @@ printf("Round %d: received card %s from player %s \n",k+1,recv_data, player[who]
             for (i=0; i<4; i++)
             { if (who != i)
                   { send(connected[i],recv_data,strlen(recv_data), 0);
+                    printf("%s\n", send_data);
                     fflush(stdout);
                     sleep(1);
                   }
@@ -373,6 +381,7 @@ printf("Round %d: received card %s from player %s \n",k+1,recv_data, player[who]
                   strcpy(send_data,"FORA,NULL");
                   for (i=0; i<4; i++)
                   { send(connected[i],send_data,strlen(send_data), 0);
+                    printf("%s\n", send_data);
                     fflush(stdout);
                     sleep(1);
                   }
@@ -386,6 +395,7 @@ printf("Round %d: received card %s from player %s \n",k+1,recv_data, player[who]
                 { trucoaceito = 1;
                   strcpy(send_data,"DESCE,NULL");
                   send(connected[who],send_data,strlen(send_data), 0);
+                  printf("%s\n", send_data);
                   fflush(stdout);
                   sleep(1);
                   strcpy(recv_data,"");
@@ -408,6 +418,7 @@ printf("Round %d: received card %s from player %s \n",k+1,recv_data, player[who]
 printf("Round %d: received card %s from player %s \n",k+1,send_data, player[who].id);
                         for (i=0; i<4; i++)
                         { send(connected[i],send_data,strlen(send_data), 0);
+                          printf("%s\n", send_data);
                           fflush(stdout);
                           sleep(1);
                         }
@@ -415,8 +426,10 @@ printf("Round %d: received card %s from player %s \n",k+1,send_data, player[who]
                       }
                     else
                       { strcpy(send_data,"Someone is cheating!!");
-                        for (i=0; i<4; i++)
-                        send(connected[i],send_data,strlen(send_data), 0);
+                        for (i=0; i<4; i++){
+                          send(connected[i],send_data,strlen(send_data), 0);
+                          printf("%s\n", send_data);
+                        }
                         exit(0);
                       }
                 } // end of desce's answer
@@ -459,8 +472,10 @@ printf("Round %d: received card %s from player %s \n",k+1,send_data, player[who]
             strcpy(winnercard,"O5");
       }
 
-      for (i=0; i<4; i++)
+      for (i=0; i<4; i++){
          send(connected[i],send_data,strlen(send_data), 0);
+         printf("%s\n", send_data);
+      }   
       fflush(stdout);
       sleep(1);
     }

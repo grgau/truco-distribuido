@@ -45,6 +45,8 @@ int main(int argc, char *argv[ ]) {
     //Printando mensagem
     displayMessage(message);
 
+		printf("Chegou aqui!!!\n\n\n");
+
     //Switch de tipos de mensagens
     //Vindas do servidor
     if(strcmp(message->info,"MESA") == 0) {
@@ -68,6 +70,15 @@ int main(int argc, char *argv[ ]) {
       displayVira(vira, IDStart);
     }
 
+		if(strcmp(message->info,"MAO") == 0) {
+			printf("RECEBEU MAO\n");
+			printf("Esse é o message->prox->info: %s\n", message->prox->info);
+			// strcpy(IDStart,message->prox->info);
+			// if(strcmp(IDStart, myPlayer.ID) == 0){
+			// 	printf("Ora ora, parece que eu começo desta vez!");
+			// }
+		}
+
 		if(strcmp(IDStart,myPlayer.ID)==0 && jogadaDaRodada==0){
 		 printf("EU COMECO PORRA\n");
 		 //enviando carta para os demais players
@@ -75,7 +86,7 @@ int main(int argc, char *argv[ ]) {
 		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
 		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
 		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);
-	 }
+	  }
 
 
 		if(strcmp(message->info,"OK")==0){

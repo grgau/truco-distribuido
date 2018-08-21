@@ -59,7 +59,7 @@ subs* receiveData(int sock, subs *message) {
 }
 
 player startGame(int sock, int port_listening, player myPlayer) {
-	char startMessage[25];
+	char startMessage[35];
 	char id[10];
 	char myIP[16];
 	char myPort[6];
@@ -138,7 +138,7 @@ int createPlayersListen () {
 
 	// Decide porta aletaroria entre 1025 e 65535 para ouvir os outros jogadores
 	srand(time(NULL));
-	port_listen = rand() % 65536 + 1025;
+	port_listen = rand() % 64511 + 1025;
 
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port_listen);
