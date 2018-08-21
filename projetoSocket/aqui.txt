@@ -1,3 +1,22 @@
+Paim 20/08 {
+
+feito a primeira rodada do truco.
+Do jeito que está, todos os jogadores estao jogando suas cartas mais altas, pq eu nao fiz a comparacao de quem esta ganhando.
+Quando se recebe a vira, o jogador que tem o idStart faz a jogada.
+Em seguida, todos reccebem uma mensagem de OK, e, a partir da mensagem começam a analisar quem eh o vencedor e quando devem jogar.
+As variaveis:
+  winnerAtMoment controla o ID do vencedor até o momento.
+  valorWinnerAtMoment controla o valor da carta q o winnerAtMoment lançou.
+  jogadaDaRodada controla em qual jogada está (0,1,2,3) e é possivel controlar quem irá jogar em seguida.
+
+Ao final, todos informam o vencedor da rodada;
+
+Ainda falta:
+  Excluir a carta que foi lancada;
+  Controlar a dupla q esta vencendo e qual a pontuação;
+  reiniciar variaveis para iniciar a 2ª rodada do jogo;
+}
+
 Greg 16/08 {
   Adicionei na pasta o código de servidor do Aleardo "myserver.c", precisa de 4 conexões pra começar a funcionar
     -> Eu abro 4 terminais mesmo.
