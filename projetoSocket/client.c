@@ -69,6 +69,9 @@ int main(int argc, char *argv[ ]) {
      if(strcmp(message->info,"VIRA") == 0) {
       vira = receiveVira(message->prox,vira,IDStart);
       displayVira(vira, IDStart);
+			printf("Cartas ordenadas:\n");
+			organizeCards(cards, vira);
+			displayCards(cards);
     }
 
 		if(strcmp(message->info,"MAO") == 0) {
