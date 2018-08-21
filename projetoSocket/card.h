@@ -1,3 +1,4 @@
+
 typedef struct card {
 	int card;
 	char suit;
@@ -79,10 +80,10 @@ int valorCarta(card *carta){
 
 }
 
-int pegarMaiorCarta(card *cards){
+int pegarMaiorCarta(card *cards, int quantCartas){
 	card *cartas = cards;
 	int maiorValor = 0, indice=0,valor=0;
-	for (int i=0;i<3;i++){
+	for (int i=0;i<quantCartas;i++){
 		valor = valorCarta(&cartas[i]);
 		if(valor>maiorValor){
 			maiorValor = valor;
@@ -91,4 +92,114 @@ int pegarMaiorCarta(card *cards){
 	}
 	return indice;
 
+}
+
+int pegarMenorCarta(card *cards, int quantCartas){
+	card *cartas = cards;
+	int menorValor = 0, indice=0,valor=0;
+	for (int i=0;i<quantCartas;i++){
+		valor = valorCarta(&cartas[i]);
+		if(valor<menorValor){
+			menorValor = valor;
+			indice=i;
+		}
+	}
+	return indice;
+
+}
+
+int pegarDoMeio(int maior, int menor){
+	if(maior==0){
+		if(menor==1){
+			return 2;
+		}
+		if(menor==2){
+			return 1;
+		}
+	}
+	if(maior==1){
+		if(menor==0){
+			return 2;
+		}
+		if(menor==2){
+			return 1;
+		}
+	}
+	if(maior==2){
+		if(menor==0){
+			return 1;
+		}
+		if(menor==1){
+			return 0;
+		}
+	}
+}
+
+int whichCardSend(int jogadaDaRodada,int rodada, char *WinnerAtMoment,int valorWinnerAtMoment,char *eu, char *parceiro, card *cartas,int placar){
+	int minhaMaior = 0;
+	int minhaMenor = 0;
+
+
+	//primeira rodada ( Deve-se tentar sempre ganhar a primeira)
+	if(rodada ==0){
+		minhaMaior = pegarMaiorCarta(cartas,3);
+		minhaMenor = pegarMenorCarta(cartas,3);
+		int cartaMeio = pegarDoMeio(minhaMaior,minhaMenor);
+		//parceiro esta ganhando
+		if(strcmp(parceiro,WinnerAtMoment)==0){
+			//jogar a mais fraca
+			return minhaMenor;
+		}
+		else{
+			//adversario esta ganhando no momento
+
+			//caso seja o primeiro a jogar da dupla
+			if(jogadaDaRodada==1){
+				//se a do meio ganhar: tente
+				if(valorCarta(&cartas[cartaMeio])>valorWinnerAtMoment){
+					return cartaMeio;
+				}
+				//descarta a menor
+				return minhaMenor;
+			}
+
+			if(jogadaDaRodada==3){
+				//segundo da dupla a jogar e o parceiro nao esta ganhando
+				if(valorCarta(&cartas[minhaMenor])>valorWinnerAtMoment){
+					return minhaMenor;
+				}
+				if(valorCarta(&cartas[cartaMeio])>valorWinnerAtMoment){
+					return cartaMeio;
+				}
+				if(valorCarta(&cartas[minhaMaior])>valorWinnerAtMoment){
+					return minhaMaior;
+				}
+				return minhaMenor;
+			}
+		}
+	}
+
+//rodada do meio
+	if(rodada==1){
+		minhaMaior = pegarMaiorCarta(cartas,2);
+		minhaMenor = pegarMenorCarta(cartas,2);
+		//tamo ganhando
+		if(placar==1){
+			//só pode ser na jogadaDaRodada = 3
+			if(valorCarta(&cartas[minhaMenor])>valorWinnerAtMoment){
+				return minhaMenor;
+			}
+			if(valorCarta(&cartas[minhaMaior])>valorWinnerAtMoment){
+				return minhaMaior;
+			}
+			return minhaMenor;
+		}
+		return minhaMaior;
+	}
+
+//ultima rodada
+	if(rodada=2){
+		minhaMaior = pegarMaiorCarta(cartas,1);
+		return minhaMaior;
+	}
 }

@@ -17,6 +17,7 @@ int main(int argc, char *argv[ ]) {
 	//variavel para controlar qual a jogada da rodada, para controlar quem é o vencedor até o momento
 	//e decidir quando q o jogador deve jogar a carta.
 	int jogadaDaRodada=0;
+	int rodada = 0; // rodadas 0,1,2
 
 	//Estrutura pra separar substrings das mensagens enviadas e recebidas
 	subs *message = NULL;
@@ -82,11 +83,11 @@ int main(int argc, char *argv[ ]) {
 		if(strcmp(IDStart,myPlayer.ID)==0 && jogadaDaRodada==0){
 		 printf("EU COMECO PORRA\n");
 		 //enviando carta para os demais players
-		 sendData("MC",cards,pegarMaiorCarta(cards),servidor);
-		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
-		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
-		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);
-	  }
+		 sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
+		 sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
+		 sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
+		 sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
+	 }
 
 
 		if(strcmp(message->info,"OK")==0){
@@ -110,11 +111,13 @@ int main(int argc, char *argv[ ]) {
 			switch(jogadaDaRodada){
 				case 1:{
 					if(strcmp(players[1].ID,myPlayer.ID)==0){
+						int indiceCarta = whichCardSend(jogadaDaRodada,0,winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards,0);
+					printf("Pediram Pra mandar: %d\n",indiceCarta );
 						printf("MINHA VEZ GALERA 2º jogador a jogar\n");
-						sendData("MC",cards,pegarMaiorCarta(cards),servidor);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);
+						sendData("MC",cards,indiceCarta,servidor);
+						sendData("MC",cards,indiceCarta,sockPlayers[0]);
+						sendData("MC",cards,indiceCarta,sockPlayers[1]);
+						sendData("MC",cards,indiceCarta,sockPlayers[2]);
 					}
 					break;
 				}
@@ -122,10 +125,10 @@ int main(int argc, char *argv[ ]) {
 				case 2:{
 					if(strcmp(players[2].ID,myPlayer.ID)==0){
 						printf("MINHA VEZ GALERA 3º jogador a jogar\n");
-						sendData("MC",cards,pegarMaiorCarta(cards),servidor);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
 					}
 					break;
 				}
@@ -133,10 +136,10 @@ int main(int argc, char *argv[ ]) {
 				case 3:{
 					if(strcmp(players[3].ID,myPlayer.ID)==0){
 						printf("MINHA VEZ GALERA 4º jogador a jogar\n");
-						sendData("MC",cards,pegarMaiorCarta(cards),servidor);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
-						sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
 					}
 
 					if(strcmp(message->info,"OK")==0){
