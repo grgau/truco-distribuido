@@ -1,3 +1,8 @@
+Greg 21/08 {
+  Correção do bug que o Azei disse
+  
+}
+
 Azei 21/08 {
   Feitas funções para ordenar as cartas na mão de acordo com a potencia/força no jogo. É preciso revisar pra ver se acertei os naipes pfvr.
   Agora, quando for descartar uma carta, apenas fazer um for, copiando as cartas mais à frente para o lugar.

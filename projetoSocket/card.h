@@ -10,6 +10,9 @@ void cardString(char *card,int number) {
 
 int cardNumber(char *card) {
 	char number[3];
+
+	memset(number, 0, sizeof number);	// Limpa vetor number (corrige bug de aparecer um caracter a mais nas cartas após receber um 10)
+
 	int i=1;
 
 	while(card[i] != '\0') {
@@ -18,6 +21,7 @@ int cardNumber(char *card) {
 		i++;
 	}
 	number[i] = '\0';
+
 
 	return atoi(number);
 }
@@ -206,6 +210,11 @@ int whichCardSend(int jogadaDaRodada,int rodada, char *WinnerAtMoment,int valorW
 		minhaMaior = pegarMaiorCarta(cartas,3);
 		minhaMenor = pegarMenorCarta(cartas,3);
 		int cartaMeio = pegarDoMeio(minhaMaior,minhaMenor);
+
+		printf("Minha maior: %d\n", minhaMaior);
+		printf("Minha meio: %d\n", cartaMeio);
+		printf("Minha menor: %d\n", minhaMenor);
+
 		//parceiro esta ganhando
 		if(strcmp(parceiro,WinnerAtMoment)==0){
 			//jogar a mais fraca

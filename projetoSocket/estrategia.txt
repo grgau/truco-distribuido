@@ -1,0 +1,36 @@
+carta top = As potencias tão indo de 0 a 13, pode considerar uma carta top ai uma que é acima de 7
+
+Depois da primeira rodada:
+	Se joga antes do parceiro:
+		Se as duas cartas top e ganhando na pontuação geral:
+			Pede truco
+			Joga mais forte
+		Se as duas cartas top e não ta ganhando na pontuação geral:
+			(não sei qual jogar, pode até ser random)
+		Se as duas cartas não top e ganhando na pontuação geral:
+			(não sei qual jogar, pode até ser random)
+		Se as duas cartas não top, ou uma top e uma não top e não ta ganhando na pontuação geral:
+			Joga mais forte
+
+	Se não joga antes do parceiro:
+		Se parceiro ta ganhando:
+			Se ja tiver trucado:
+				(não sei qual jogar, pode até ser random)
+			Se não tiver trucado:
+				Se tiver duas cartas top e ganhando na pontuação geral:
+					Pede truco
+				Se não tiver duas carta top ou uma top e uma não top:
+					
+					
+		Se parceiro não ta ganhando:
+			Se acha que consegue ganhar (as duas da mão são cartas top):
+				Se tiver ganhando na pontuação geral:
+					Se já não tiver trucado:
+						Pede truco
+					Se já tiver trucado:
+						Joga mais forte
+				Se não tiver ganhando na pontuação geral:	
+					Joga mais forte
+			Se acha que não consegue ganhar (duas carta não top):
+				Sai fora
+	
