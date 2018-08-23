@@ -160,3 +160,22 @@ int createPlayersListen () {
 
 	return port_listen;
 }
+
+
+
+/////////////////////////////////////PRECISO VER ONDE COLOCAR ISSO depois
+//Função que joga a carta na posição pos da mão, levando em consideração o numero de jogadas já feitas.
+void jogaCarta(card *cards, int cartaJogada, int rodada, int servidor, int *sockPlayers){
+	int i;
+
+	//Envia a carta escolhida para os demais jogadores e para o servidor.
+	sendData("MC",cards, cartaJogada, servidor);
+	sendData("MC",cards, cartaJogada, sockPlayers[0]);
+	sendData("MC",cards, cartaJogada, sockPlayers[1]);
+	sendData("MC",cards, cartaJogada, sockPlayers[2]);
+
+	//"Limpa" a mão.
+	if(cartaJogada != 2)
+		for(i=cartaJogada; i < 3-rodada; i++)
+			cards[i] = cards[i+1];
+}
