@@ -1,6 +1,19 @@
+Greg 23/08 {
+  Acrescentei na struct o int Potencia, quando reordena as cartas da mão ja atribui a potencia de cada uma
+  Rescrevi as funções pegaMaiorCarta, pegaMenorCarta, pegarDoMeio pra usar só getPotencia.
+  A função whichCardSend ta sendo chamado em todas as jogadas, então colocar la a estratégia geral
+  Criei em card.h a struct "placar", pode servir pra contar placar da rodada ou das partidas (ver linhas 16-20 em client.c)
+  Ta atualizando quem ganha cada rodada, não ta marcando ainda quem ganha cada partida (o servidor do aleardo manda uma mensagem tipo "Current score is (19978589-59142455): 1 and (97176476-28583024): 0")
+  Dentro da função jogaCarta, coloquei um pedaço que "marca" carta jogada, (suit='-', card=0, potencia=-1)
+    -> As funções pegaMaiorCarta, pegaMenorCarta, pegarDoMeio tão funcionando pra tratar cartas "jogadas" (é a condição if(cards[i].card != 0)
+
+  OBS (O que falta fazer que eu lembro agora):
+  Ta jogando até a ultima rodada, mas ainda não trata as mensagens "EC", "TRUCO", "DESCE" e "FORA"
+    -> Logo não aceita truco, nem pede truco, etc
+}
+
 Greg 21/08 {
   Correção do bug que o Azei disse
-  
 }
 
 Azei 21/08 {

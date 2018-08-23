@@ -30,6 +30,7 @@ void displayMessage(subs *message) {
 			printf("%s ",message->info);
 			message = message->prox;
 		}
+		printf("\n");
 	}
 	else
 		printf("Mensagem não existe!\n");

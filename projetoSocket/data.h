@@ -96,19 +96,20 @@ player startGame(int sock, int port_listening, player myPlayer) {
 }
 
 //Função que trata dados a serem enviados (VAI MUDAR MUITO AINDA)
-void sendData(char *comando, card *cards,int index,int sock) {
-
+void sendData(char *comando, card *cards, int index, int sock) {
+	int i;
     char message[15];
-    char *suit;
-    char card[2];
+    char suit[2];
+    char card[3];
 
     strcpy(message,comando);
     strcat(message,",");
 
     if(cards != NULL) {
-        suit = &cards[index].suit;
+				suit[0] = cards[index].suit;
+				suit[1] = '\0';
 
-        cardString(card,cards[index].card);
+        cardString(card, cards[index].card);
 
         strcat(message,suit);
         strcat(message,card);
@@ -118,6 +119,7 @@ void sendData(char *comando, card *cards,int index,int sock) {
     }
 
 	strcpy(send_data,message);
+	printf("Mensagem enviada: %s\n", message);
 	send(sock,send_data,strlen(send_data), 0);
 }
 
@@ -125,6 +127,7 @@ int createPlayersListen () {
 	int sock, connected, bytes_recv, true = 1;
 	struct sockaddr_in server_addr, client_addr;
 	int sin_size, port_listen;
+	char myIP[16];
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 			perror("Socket");
@@ -141,13 +144,13 @@ int createPlayersListen () {
 	port_listen = rand() % 64511 + 1025;
 
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(port_listen);
+	server_addr.sin_port = htons(port_listen);	// Deixa que o sistema operacional escolha uma porta livre
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 	bzero(&(server_addr.sin_zero),8);
 
 	if (bind(sock, (struct sockaddr *)&server_addr,sizeof(struct sockaddr)) == -1) {
-			perror("Unable to bind");
-			exit(1);
+		perror("Unable to bind");
+		exit(1);
 	}
 
 	if (listen(sock, 5) == -1) {
@@ -155,7 +158,14 @@ int createPlayersListen () {
 			exit(1);
 	}
 
-	printf("\nTCPServer Waiting for client on port %d", port_listen);
+	// Pega a porta que o sistema operacional atribuiu e poe na variavel port_listen
+	/*bzero(&my_addr, sizeof(my_addr));
+	int len = sizeof(my_addr);
+	getsockname(sock, (struct sockaddr *) &my_addr, &len);
+	inet_ntop(AF_INET, &server_addr.sin_addr, myIP, sizeof(myIP));
+	port_listen = ntohs(my_addr.sin_port);*/
+
+	printf("\nTCPServer Waiting for client on port %d\n", port_listen);
 	fflush(stdout);
 
 	return port_listen;
@@ -165,17 +175,21 @@ int createPlayersListen () {
 
 /////////////////////////////////////PRECISO VER ONDE COLOCAR ISSO depois
 //Função que joga a carta na posição pos da mão, levando em consideração o numero de jogadas já feitas.
-void jogaCarta(card *cards, int cartaJogada, int rodada, int servidor, int *sockPlayers){
+void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
 	int i;
 
 	//Envia a carta escolhida para os demais jogadores e para o servidor.
-	sendData("MC",cards, cartaJogada, servidor);
-	sendData("MC",cards, cartaJogada, sockPlayers[0]);
-	sendData("MC",cards, cartaJogada, sockPlayers[1]);
-	sendData("MC",cards, cartaJogada, sockPlayers[2]);
+	sendData("MC", cards, indiceCartaJogada, servidor);
+	sendData("MC", cards, indiceCartaJogada, sockPlayers[0]);
+	sendData("MC", cards, indiceCartaJogada, sockPlayers[1]);
+	sendData("MC", cards, indiceCartaJogada, sockPlayers[2]);
 
 	//"Limpa" a mão.
-	if(cartaJogada != 2)
-		for(i=cartaJogada; i < 3-rodada; i++)
-			cards[i] = cards[i+1];
+	/*if(indiceCartaJogada != 2)
+		for(i = indiceCartaJogada; i < 3-rodada; i++)
+			cards[i] = cards[i+1];*/
+
+	cards[indiceCartaJogada].suit = '-';
+	cards[indiceCartaJogada].card = 0;
+	cards[indiceCartaJogada].potencia = -1;
 }

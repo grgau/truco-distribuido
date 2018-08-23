@@ -19,7 +19,7 @@ void receivePlayers(subs *message, player *players) {
 //Função de apoio pra testar recebimento dos players
 void displayPlayers(player *players) {
 	int i;
-	printf("\nPlayers:\n");
+	printf("\n\nPlayers:\n");
 	for(i=0;i<4;i++) {
 		printf("  Player %s\n    ip: %s\n    port: %s\n\n",players[i].ID,players[i].ip,players[i].port);
 	}

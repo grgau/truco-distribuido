@@ -11,22 +11,32 @@ int main(int argc, char *argv[ ]) {
 	player players[4];
 	player myPlayer;
 	player myPartner;
+
+	// Conta o placar de pontos, de cada rodada e da partida
+	placar contadorRodada, contadorPartida;
+	contadorRodada.meuTime = 0;
+	contadorRodada.timeInimigo = 0;
+	contadorPartida.meuTime = 0;
+	contadorPartida.timeInimigo = 0;
+
 	char winnerAtMoment[10]="";
 	int valorWinnerAtMoment=0;
+	int indiceCartaJogada;
 
 	//variavel para controlar qual a jogada da rodada, para controlar quem é o vencedor até o momento
 	//e decidir quando q o jogador deve jogar a carta.
-	int jogadaDaRodada=0;
+	int jogadaDaRodada = 0;
 	int rodada = 1; // rodadas 1,2,3
 
 	//Estrutura pra separar substrings das mensagens enviadas e recebidas
 	subs *message = NULL;
 
+	// Cria servidor de conexão para jogadores, retornando porta que esta ouvindo
+	port_listening = createPlayersListen();
+
 	//Abrindo conexão com servidor do Aleardo
   int servidor = createSocket(IP_SERVER, PORT_SERVER);
 
-	// Cria servidor de conexão para jogadores, retornando porta que esta ouvindo
-	port_listening = createPlayersListen();
 
 	// Mensagem inicial de entrada do jogador na partida ≪ "ID", endereçoIP, porta ≫, retorna quem sou
 	myPlayer = startGame(servidor, port_listening, myPlayer);
@@ -46,82 +56,101 @@ int main(int argc, char *argv[ ]) {
     //Printando mensagem
     displayMessage(message);
 
-    //Switch de tipos de mensagens
-    //Vindas do servidor
+		// Mensagem de MESA vinda do servidor, define quem são os jogadores (ID, IP, Porta)
     if(strcmp(message->info,"MESA") == 0) {
       receivePlayers(message->prox, players);
       displayPlayers(players);
-			printf("\nmyID: %s", myPlayer.ID);
+			printf("myID: %s\n", myPlayer.ID);
 			myPartner = whoIsMyPartner(players, myPlayer); // Retorna ID do parceiro
-			printf("\nmyPartner: %s", myPartner.ID);
+			printf("myPartner: %s\n\n", myPartner.ID);
 
 			// Cria 3 sockets, um com cada jogador
 			for (i=0; i < 4; i++)
 				if (players[i].ID != myPlayer.ID) // Para não criar socket consigo mesmo
 					sockPlayers[i] = createSocket(players[i].ip,atoi(players[i].port));
     }
+
+		// Mensagem de CARTA vinda do servidor, define as cartas da mão recebidas
      if(strcmp(message->info,"CARTA") == 0) {
       receiveCards(message->prox,cards);
       displayCards(cards);
     }
+
+		// Mensagem de VIRA vinda do servidor, define qual a carta de vira
      if(strcmp(message->info,"VIRA") == 0) {
       vira = receiveVira(message->prox,vira,IDStart);
       displayVira(vira, IDStart);
-			printf("Cartas ordenadas:\n");
+			printf("Cartas ordenadas:");
 			organizeCards(cards, vira);
 			displayCards(cards);
     }
 
+		// Mensagem de MAO vinda do servidor, define quem começa a proxima rodada
 		if(strcmp(message->info,"MAO") == 0) {
+
+			// Verifica quem ganhou e conta no placar da rodada
+			if ((strcmp(winnerAtMoment, myPlayer.ID) == 0) || (strcmp(winnerAtMoment, myPartner.ID) == 0))
+				contadorRodada.meuTime++;
+			else
+				contadorRodada.timeInimigo++;
+			printf("\nPlacar da rodada: meuTime: %d - timeInimigo: %d\n", contadorRodada.meuTime, contadorRodada.timeInimigo);
+
 			printf("RECEBEU MAO\n");
-			printf("Esse é o message->prox->info: %s\n", message->prox->info);
+			printf("Jogador que começa a rodada: %s\n", message->prox->info);
 			strcpy(IDStart,message->prox->info);
-			if(strcmp(IDStart, myPlayer.ID) == 0){
-				printf("Ora ora, parece que eu começo desta vez!");
+			if(strcmp(message->prox->info, myPlayer.ID) == 0) {
+				printf("\n\nOra ora, parece que eu começo desta vez!\n\n");
 			}
 			jogadaDaRodada = 0;
 			rodada++;
+			displayCards(cards);
 		}
 
+		// Estratégia da primeira jogada da rodada
+		// Joga a maior carta da mão
 		if(strcmp(IDStart,myPlayer.ID)==0 && jogadaDaRodada==0){
-		 printf("EU COMECO PORRA\n");
-		 //enviando carta para os demais players
-		 // sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
-		 // sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
-		 // sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
-		 // sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
-		 jogaCarta(cards, pegarMaiorCarta(cards,3), rodada, servidor, sockPlayers);
+		 indiceCartaJogada = pegarMaiorCarta(cards);
+		 /* enviando carta para os demais players
+		 sendData("MC",cards,pegarMaiorCarta(cards),servidor);
+		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
+		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
+		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);*/
+		 jogaCarta(cards, indiceCartaJogada, rodada, servidor, sockPlayers);
+		 jogadaDaRodada++;
+		 //displayCards(cards);
 	 }
 
-
-		if(strcmp(message->info,"OK")==0){
+		// Mensagem de OK vinda do servidor, confirma recebimento de carta jogada por um jogador
+		if(strcmp(message->info, "OK") == 0) {
 			cartaJogada = receiveCard(message->prox,cartaJogada);
 
-			//atualizar o atual vencedor
-
-			//primeira jogada
-			if(strcmp(winnerAtMoment,"")==0){
+			// Se eu comecei a rodada, guarda eu como winnerAtMoment e potência da carta que joguei
+			if(strcmp(winnerAtMoment, "") == 0){
 				strcpy(winnerAtMoment,IDStart);
-				valorWinnerAtMoment = valorCarta(&cartaJogada);
+				valorWinnerAtMoment = getPotencia(cartaJogada, vira);	// Atribui as potencias pra cada carta
 			}
-			else{
-				//vencedor mudou, atualizar as informacoes
-				if(valorWinnerAtMoment< valorCarta(&cartaJogada)){
+
+			// Se eu não comecei a rodada, atualiza quem está ganhando e com qual potência de carta
+			else {
+				if(valorWinnerAtMoment < getPotencia(cartaJogada, vira)) {
 					strcpy(winnerAtMoment,players[jogadaDaRodada].ID);
-					valorWinnerAtMoment = valorCarta(&cartaJogada);
+					valorWinnerAtMoment = getPotencia(cartaJogada, vira);
 				}
 			}
 			jogadaDaRodada++;
+
+			printf("\nwinnerAtMoment: %s - valorWinnerAtMoment: %d\n", winnerAtMoment, valorWinnerAtMoment);
+
 			switch(jogadaDaRodada){
-				case 1:{
+				case 1: {
 					if(strcmp(players[1].ID,myPlayer.ID)==0){
-						int indiceCarta = whichCardSend(jogadaDaRodada,0,winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards,0);
-					printf("Pediram Pra mandar: %d\n",indiceCarta );
+						int indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
+						printf("Pediram Pra mandar: %d\n",indiceCarta );
 						printf("MINHA VEZ GALERA 2º jogador a jogar\n");
-						// sendData("MC",cards,indiceCarta,servidor);
-						// sendData("MC",cards,indiceCarta,sockPlayers[0]);
-						// sendData("MC",cards,indiceCarta,sockPlayers[1]);
-						// sendData("MC",cards,indiceCarta,sockPlayers[2]);
+						/* sendData("MC",cards,indiceCarta,servidor);
+						sendData("MC",cards,indiceCarta,sockPlayers[0]);
+						sendData("MC",cards,indiceCarta,sockPlayers[1]);
+						sendData("MC",cards,indiceCarta,sockPlayers[2]); */
 						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					}
 					break;
@@ -129,63 +158,60 @@ int main(int argc, char *argv[ ]) {
 
 				case 2:{
 					if(strcmp(players[2].ID,myPlayer.ID)==0){
+						int indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
+
 						printf("MINHA VEZ GALERA 3º jogador a jogar\n");
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
-						jogaCarta(cards, pegarMaiorCarta(cards,3), rodada, servidor, sockPlayers);
+						/* sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]); */
+						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					}
 					break;
 				}
 
 				case 3:{
 					if(strcmp(players[3].ID,myPlayer.ID)==0){
+						int indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 						printf("MINHA VEZ GALERA 4º jogador a jogar\n");
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
-						// sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
-						jogaCarta(cards, pegarMaiorCarta(cards,3), rodada, servidor, sockPlayers);
+						/* sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
+						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]); */
+						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					}
 
-					if(strcmp(message->info,"OK")==0){
-						printf("QUEM VENCEU A PRIMEIRA RODADA FOI: %s",winnerAtMoment );
-					}
+					/*if(strcmp(message->info,"OK")==0) {
+						printf("\nQUEM VENCEU A PRIMEIRA RODADA FOI: %s\n",winnerAtMoment );
+
+
+					}*/
 					break;
 				}
-
 			}
-
-
 		}
-    /*else if(strcmp(message->info,"FR") == 0) {
-      //lógica de fim de rodada
-    }*/
-     if(strcmp(message->info,"MC") == 0) { // Receber "MC", precisa verificar de quem que foi
-		 	printf("SOU EU AGR MANO\n");
-  	}
-		//Vindas de jogadores
-     if(strcmp(message->info,"EC") == 0) {
+
+    if(strcmp(message->info,"EC") == 0) {
       //lógica de armazenar carta vazia no jogador
     }
-     if(strcmp(message->info,"TRUCO") == 0) {
+    if(strcmp(message->info,"TRUCO") == 0) {
       //lógica de aceitar ou não o truco
     }
-     if(strcmp(message->info,"DESCE") == 0) {
+    if(strcmp(message->info,"DESCE") == 0) {
       //lógica de ir pro truco
     }
-     if(strcmp(message->info,"FORA") == 0) {
+    if(strcmp(message->info,"FORA") == 0) {
     	//lógica de fim de rodada
     }
 
-    //e por assim vai
+		// Servidor envia mensagem de fim da rodada
+		if(strcmp(message->info,"FR") == 0) {
+
+		}
 
     //Destruindo mensagem recebida após cada interação
     message = destroyMessage(message);
 
-    //sendData("FORA",NULL,0,servidor);
-    //tá enviando dados sozinho pra manter recebendo
   }
 
   return 0;
