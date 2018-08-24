@@ -1,3 +1,11 @@
+Greg 24/08 Pt.2 {
+  Aparentemente corrigi o problema (rodou por 5 partidas sem crashar)
+  Tive que usar uma variavel de controle "joguei" porque o primeiro jogador saia jogando tudo que tinha na mão por não ter uma condição dele esperar alguma mensagem
+    -> Aquele jeito que tava antes só previa pra caso o jogador 0 fosse o primeiro a jogar sempre (o que não ocorre caso ele não ganhe a rodada - o vira vai ser outro player)
+
+    OBS: Agora falta o resto das estratégias
+}
+
 Greg 24/08 {
   Acho que corrigi o problema de jogar mais de uma carta e de jogador não saber a hora dele jogar
     -> Usei uma variavel de controle contJogadas e a funcao findJogada pra dizer pra cada um qual a vez dele

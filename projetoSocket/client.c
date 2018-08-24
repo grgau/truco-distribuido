@@ -28,6 +28,7 @@ int main(int argc, char *argv[ ]) {
 	//e decidir quando q o jogador deve jogar a carta.
 	int jogadaDaRodada = -1;
 	int rodada = 1; // rodadas 1,2,3
+	int joguei = 0;
 	int indiceCarta;
 
 	//Estrutura pra separar substrings das mensagens enviadas e recebidas
@@ -88,8 +89,12 @@ int main(int argc, char *argv[ ]) {
 			jogadaDaRodada = findJogada(IDStart, myPlayer, myPartner, players);
 			printf("\n\n -- jogadaDaRodada: %d -- \n\n", jogadaDaRodada);
 
+			strcpy(winnerAtMoment,"");
+
 			// Pra quando começa uma nova partida
 			contJogadas = 0 ;
+
+			joguei = 0;
     }
 
 		// Mensagem de MAO vinda do servidor, define quem começa a proxima rodada
@@ -118,19 +123,22 @@ int main(int argc, char *argv[ ]) {
 
 			jogadaDaRodada = findJogada(IDStart, myPlayer, myPartner, players);
 			printf("\n\n -- jogadaDaRodada: %d -- \n\n", jogadaDaRodada);
+
+			joguei = 0;
 		}
 
 		// Estratégia da primeira jogada da rodada
 		// Joga a maior carta da mão
-		if(/*strcmp(IDStart, myPlayer.ID)==0 &&*/ jogadaDaRodada == 0 && strcmp(winnerAtMoment,myPlayer.ID) != 0) {
+		if(/*strcmp(IDStart, myPlayer.ID)==0 &&*/ jogadaDaRodada == 0 && /*strcmp(winnerAtMoment,myPlayer.ID) != 0*/ contJogadas == jogadaDaRodada && joguei == 0) {
 			indiceCarta = pegarMaiorCarta(cards);
+			printf("jogada: %d, contJogadas: %d\n", jogadaDaRodada, contJogadas);
 			// enviando carta para os demais players
 			/*sendData("MC",cards,indiceCartaJogada,servidor);
 			sendData("MC",cards,indiceCartaJogada,sockPlayers[0]);
 			sendData("MC",cards,indiceCartaJogada,sockPlayers[1]);
 			sendData("MC",cards,indiceCartaJogada,sockPlayers[2]);*/
-			strcpy(winnerAtMoment,IDStart);
-			valorWinnerAtMoment = getPotencia(cards[indiceCarta], vira);
+			//strcpy(winnerAtMoment,IDStart);
+			//valorWinnerAtMoment = getPotencia(cards[indiceCarta], vira);
 
 			/*if(cards[indiceCartaJogada].card==0)
 				printf("IRIA MANDAR DNOVO\n" );
@@ -138,6 +146,7 @@ int main(int argc, char *argv[ ]) {
 			jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 			//jogadaDaRodada++;
 			//displayCards(cards);
+			joguei = 1;
 		}
 
 		// Mensagem de OK vinda do servidor, confirma recebimento de carta jogada por um jogador
