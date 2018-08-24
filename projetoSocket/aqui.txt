@@ -1,3 +1,10 @@
+Greg 24/08 {
+  Acho que corrigi o problema de jogar mais de uma carta e de jogador não saber a hora dele jogar
+    -> Usei uma variavel de controle contJogadas e a funcao findJogada pra dizer pra cada um qual a vez dele
+  As vezes ta dando um segfault quando termina a primeira partida e começa a segunda, ainda não sei pq
+  To commitando agora meio na pressa, o código ta meio bagunçado, prometo arrumar depois
+}
+
 Greg 23/08 {
   Acrescentei na struct o int Potencia, quando reordena as cartas da mão ja atribui a potencia de cada uma
   Rescrevi as funções pegaMaiorCarta, pegaMenorCarta, pegarDoMeio pra usar só getPotencia.

@@ -269,15 +269,13 @@ int pegarDoMeio(card *cards) {
 }*/
 
 int whichCardSend(int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valorWinnerAtMoment,char *eu, char *parceiro, card *cartas, placar contadorRodada){
-	int minhaMaior = 0;
-	int minhaMenor = 0;
-
+	int minhaMaior, minhaMenor, cartaMeio;
 
 	//primeira rodada ( Deve-se tentar sempre ganhar a primeira)
-	if(rodada ==1){
+	if(rodada == 1){
 		minhaMaior = pegarMaiorCarta(cartas/*,3*/);
 		minhaMenor = pegarMenorCarta(cartas/*,3*/);
-		int cartaMeio = pegarDoMeio(/*minhaMaior,minhaMenor*/cartas);
+		cartaMeio = pegarDoMeio(/*minhaMaior,minhaMenor*/cartas);
 
 		//parceiro esta ganhando
 		if(strcmp(parceiro,WinnerAtMoment)==0){

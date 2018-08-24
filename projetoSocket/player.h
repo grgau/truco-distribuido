@@ -1,6 +1,6 @@
 typedef struct player {
     char ID[10];
-    char ip[15];
+    char ip[16];
     char port[10];
 } player;
 

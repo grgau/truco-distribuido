@@ -33,7 +33,7 @@ int createSocket(char *hostname, int port) {
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(port);
-    server_addr.sin_addr = *((struct in_addr *)host->h_addr);
+    server_addr.sin_addr = *((struct in_addr *) host -> h_addr);
     bzero(&(server_addr.sin_zero),8);
 
     if (connect(newSocket, (struct sockaddr *)&server_addr,sizeof(struct sockaddr)) == -1) {
@@ -179,6 +179,7 @@ void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int
 	int i;
 
 	//Envia a carta escolhida para os demais jogadores e para o servidor.
+
 	sendData("MC", cards, indiceCartaJogada, servidor);
 	sendData("MC", cards, indiceCartaJogada, sockPlayers[0]);
 	sendData("MC", cards, indiceCartaJogada, sockPlayers[1]);
@@ -192,4 +193,88 @@ void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int
 	cards[indiceCartaJogada].suit = '-';
 	cards[indiceCartaJogada].card = 0;
 	cards[indiceCartaJogada].potencia = -1;
+}
+
+int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
+	int i;
+
+	if (strcmp(IDStart, myPlayer.ID) == 0) {	// Se eu for quem começa
+		return 0;
+	}
+	else {
+		for (i=0; i<4; i++) {
+			if (strcmp(IDStart, players[i].ID) == 0) { // Achei quem começa
+				switch (i) {
+					case 0: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
+							return 1;
+						else
+							return 3;
+					break;
+					}
+					case 1: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
+							return 1;
+						else
+							return 3;
+					break;
+					}
+					case 2: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
+							return 1;
+						else
+							return 3;
+					break;
+					}
+					case 3: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i-1].ID, myPlayer.ID) == 0)
+							return 3;
+						else
+							return 1;
+					}
+				}
+			}
+
+
+
+
+
+
+				/*if (strcmp(IDStart, myPartner.ID) != 0 && strcmp(IDStart, players[3].ID) != 0) { // Se eu nao for parceiro dele
+					if (strcmp(players[i+1].ID, myPlayer.ID) == 0) {	// Se eu sou depois dele
+						return 1;
+						//jogadaDaRodada--;
+					}
+					else {	// Se eu sou antes dele
+						return 3;
+						//jogadaDaRodada--;
+					}
+					if (strcmp(IDStart, players[3].ID) == 0) {
+						if (strcmp(players[i-1].ID, myPlayer.ID) == 0) {
+							return 3;
+							//jogadaDaRodada--;
+						}
+						else {
+							return 1;
+							//jogadaDaRodada--;
+						}
+					}
+				}
+				else { // Sou parceiro de quem começa
+					if (i == 0)
+						return 2;
+					else
+						return 0;
+				}
+			}*/
+		}
+	}
 }
