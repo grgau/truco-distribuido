@@ -89,7 +89,7 @@ int main(int argc, char *argv[ ]) {
 		if(strcmp(message->info,"MAO") == 0) {
 
 			// Verifica quem ganhou e conta no placar da rodada
-			if ((strcmp(winnerAtMoment, myPlayer.ID) == 0) || (strcmp(winnerAtMoment, myPartner.ID) == 0))
+			if ((strcmp(message->prox->info, myPlayer.ID) == 0) || (strcmp(message->prox->info, myPartner.ID) == 0))
 				contadorRodada.meuTime++;
 			else
 				contadorRodada.timeInimigo++;
@@ -101,22 +101,31 @@ int main(int argc, char *argv[ ]) {
 			if(strcmp(message->prox->info, myPlayer.ID) == 0) {
 				printf("\n\nOra ora, parece que eu começo desta vez!\n\n");
 			}
+			strcpy(winnerAtMoment,"");
+			valorWinnerAtMoment=0;
 			jogadaDaRodada = 0;
 			rodada++;
 			displayCards(cards);
 		}
 
+
 		// Estratégia da primeira jogada da rodada
 		// Joga a maior carta da mão
-		if(strcmp(IDStart,myPlayer.ID)==0 && jogadaDaRodada==0){
+		if(strcmp(IDStart,myPlayer.ID)==0 && jogadaDaRodada==0 && strcmp(winnerAtMoment,myPlayer.ID)!=0){
 		 indiceCartaJogada = pegarMaiorCarta(cards);
 		 /* enviando carta para os demais players
 		 sendData("MC",cards,pegarMaiorCarta(cards),servidor);
 		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[0]);
 		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[1]);
 		 sendData("MC",cards,pegarMaiorCarta(cards),sockPlayers[2]);*/
+		 strcpy(winnerAtMoment,IDStart);
+		 valorWinnerAtMoment = getPotencia(cards[indiceCartaJogada], vira);
+		 if(cards[indiceCartaJogada].card==0){
+			 printf("IRIA MANDAR DNOVO\n" );
+		 }
+		 else
 		 jogaCarta(cards, indiceCartaJogada, rodada, servidor, sockPlayers);
-		 jogadaDaRodada++;
+		 //jogadaDaRodada++;
 		 //displayCards(cards);
 	 }
 
@@ -140,10 +149,10 @@ int main(int argc, char *argv[ ]) {
 			jogadaDaRodada++;
 
 			printf("\nwinnerAtMoment: %s - valorWinnerAtMoment: %d\n", winnerAtMoment, valorWinnerAtMoment);
-
+			printf("jogada: %d\n",jogadaDaRodada );
 			switch(jogadaDaRodada){
 				case 1: {
-					if(strcmp(players[1].ID,myPlayer.ID)==0){
+					if(strcmp(players[1].ID,myPlayer.ID)==0 && strcmp(winnerAtMoment,myPlayer.ID)!=0){
 						int indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 						printf("Pediram Pra mandar: %d\n",indiceCarta );
 						printf("MINHA VEZ GALERA 2º jogador a jogar\n");
@@ -153,11 +162,13 @@ int main(int argc, char *argv[ ]) {
 						sendData("MC",cards,indiceCarta,sockPlayers[2]); */
 						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					}
+						//jogadaDaRodada++;
+					printf("%d %d \n",strcmp(players[1].ID,myPlayer.ID)==0 ,strcmp(winnerAtMoment,myPlayer.ID)!=0 );
 					break;
 				}
 
 				case 2:{
-					if(strcmp(players[2].ID,myPlayer.ID)==0){
+					if(strcmp(players[2].ID,myPlayer.ID)==0 && strcmp(winnerAtMoment,myPlayer.ID)!=0){
 						int indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 
 						printf("MINHA VEZ GALERA 3º jogador a jogar\n");
@@ -171,7 +182,7 @@ int main(int argc, char *argv[ ]) {
 				}
 
 				case 3:{
-					if(strcmp(players[3].ID,myPlayer.ID)==0){
+					if(strcmp(players[3].ID,myPlayer.ID)==0 && strcmp(winnerAtMoment,myPlayer.ID)!=0){
 						int indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 						printf("MINHA VEZ GALERA 4º jogador a jogar\n");
 						/* sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
@@ -186,6 +197,10 @@ int main(int argc, char *argv[ ]) {
 
 
 					}*/
+					break;
+				}
+				default:{
+					printf("CAIU DEFAULTTT\n" );
 					break;
 				}
 			}
