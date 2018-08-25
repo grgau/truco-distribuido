@@ -195,6 +195,27 @@ void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int
 	cards[indiceCartaJogada].potencia = -1;
 }
 
+//deve mandar NULL pros players e a carta pro servidor
+void escondeCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
+	int i;
+
+	//Envia a carta escolhida para os demais jogadores e para o servidor.
+
+	sendData("EC", cards, indiceCartaJogada, servidor);
+	sendData("EC", NULL, indiceCartaJogada, sockPlayers[0]);
+	sendData("EC", NULL, indiceCartaJogada, sockPlayers[1]);
+	sendData("EC", NULL, indiceCartaJogada, sockPlayers[2]);
+
+	//"Limpa" a mão.
+	/*if(indiceCartaJogada != 2)
+		for(i = indiceCartaJogada; i < 3-rodada; i++)
+			cards[i] = cards[i+1];*/
+
+	cards[indiceCartaJogada].suit = '-';
+	cards[indiceCartaJogada].card = 0;
+	cards[indiceCartaJogada].potencia = -1;
+}
+
 int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
 	int i;
 

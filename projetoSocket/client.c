@@ -180,10 +180,15 @@ int main(int argc, char *argv[ ]) {
 						printf("MINHA VEZ GALERA 2º jogador a jogar\n");
 						indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 						printf("Pediram Pra mandar: %d\n",indiceCarta );
+						if(indiceCarta==pegarMenorCarta(cards/*,2*/) && rodada!=0){
+							printf("!!!VOU ESCONDER CAMBADA, SEIS NAO AGUENTA!!!\n");
+							escondeCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
+						}
 						/* sendData("MC",cards,indiceCarta,servidor);
 						sendData("MC",cards,indiceCarta,sockPlayers[0]);
 						sendData("MC",cards,indiceCarta,sockPlayers[1]);
 						sendData("MC",cards,indiceCarta,sockPlayers[2]); */
+						else
 						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					//}
 					//jogadaDaRodada++;
@@ -195,13 +200,15 @@ int main(int argc, char *argv[ ]) {
 					//if(strcmp(players[2].ID,myPlayer.ID)==0/* && strcmp(winnerAtMoment,myPlayer.ID)!=0*/){
 						printf("MINHA VEZ GALERA 3º jogador a jogar\n");
 						indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
-
-						/*sendData("MC",cards,indiceCarta,servidor);
+						if(indiceCarta==pegarMenorCarta(cards/*,2*/) && rodada!=0){
+							printf("!!!VOU ESCONDER CAMBADA, SEIS NAO AGUENTA!!!\n");
+							escondeCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
+						}
+						/* sendData("MC",cards,indiceCarta,servidor);
 						sendData("MC",cards,indiceCarta,sockPlayers[0]);
 						sendData("MC",cards,indiceCarta,sockPlayers[1]);
-						sendData("MC",cards,indiceCarta,sockPlayers[2]);
-						if(cards[indiceCarta].card != 0)*/
-
+						sendData("MC",cards,indiceCarta,sockPlayers[2]); */
+						else
 						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					//}
 					break;
@@ -211,12 +218,15 @@ int main(int argc, char *argv[ ]) {
 					//if(strcmp(players[3].ID,myPlayer.ID)==0/* && strcmp(winnerAtMoment,myPlayer.ID)!=0*/){
 						printf("MINHA VEZ GALERA 4º jogador a jogar\n");
 						indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
-						/* sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
-						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
-						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
-						sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
-						if(cards[indiceCarta].card != 0)*/
-
+						if(indiceCarta==pegarMenorCarta(cards/*,2*/) && rodada!=0){
+							printf("!!!VOU ESCONDER CAMBADA, SEIS NAO AGUENTA!!!\n");
+							escondeCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
+						}
+						/* sendData("MC",cards,indiceCarta,servidor);
+						sendData("MC",cards,indiceCarta,sockPlayers[0]);
+						sendData("MC",cards,indiceCarta,sockPlayers[1]);
+						sendData("MC",cards,indiceCarta,sockPlayers[2]); */
+						else
 						jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					//}
 
@@ -236,9 +246,80 @@ int main(int argc, char *argv[ ]) {
 
 		}
 
-    if(strcmp(message->info,"EC") == 0) {
-      //lógica de armazenar carta vazia no jogador
-    }
+//nao precisa tratar quando recebe ec, pq o servidor envia <"OK", NULL>
+    // if(strcmp(message->info,"EC") == 0) {
+    //   //lógica de armazenar carta vazia no jogador
+		// 	//quando a carta for escondida, a logica é a mesma que quando recebe OK do servidor, porem sem atualizar o servidor
+		// 	contJogadas++;
+		// 	cartaJogada = receiveCard(message->prox,cartaJogada);
+		// 	printf("O SAFADO ESCONDEUU!!!!\n" );
+		// 	printf("\nwinnerAtMoment: %s - valorWinnerAtMoment: %d\n", winnerAtMoment, valorWinnerAtMoment);
+		// 	printf("jogada: %d, contJogadas: %d\n", jogadaDaRodada, contJogadas);
+		// 	if (jogadaDaRodada == contJogadas) {
+		// 		printf("\n\nentrou if\n\n");
+		// 	switch(jogadaDaRodada){
+		// 		case 1: {
+		// 			//if(strcmp(players[1].ID,myPlayer.ID)==0/* && strcmp(winnerAtMoment,myPlayer.ID)!=0*/){
+		// 				printf("MINHA VEZ GALERA 2º jogador a jogar\n");
+		// 				indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
+		// 				printf("Pediram Pra mandar: %d\n",indiceCarta );
+		//
+		//
+		// 				/* sendData("MC",cards,indiceCarta,servidor);
+		// 				sendData("MC",cards,indiceCarta,sockPlayers[0]);
+		// 				sendData("MC",cards,indiceCarta,sockPlayers[1]);
+		// 				sendData("MC",cards,indiceCarta,sockPlayers[2]); */
+		// 				jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
+		// 			//}
+		// 			//jogadaDaRodada++;
+		// 			printf("%d %d \n",strcmp(players[1].ID,myPlayer.ID)==0 ,strcmp(winnerAtMoment,myPlayer.ID)!=0 );
+		// 			break;
+		// 		}
+		//
+		// 		case 2:{
+		// 			//if(strcmp(players[2].ID,myPlayer.ID)==0/* && strcmp(winnerAtMoment,myPlayer.ID)!=0*/){
+		// 				printf("MINHA VEZ GALERA 3º jogador a jogar\n");
+		// 				indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
+		//
+		// 				/*sendData("MC",cards,indiceCarta,servidor);
+		// 				sendData("MC",cards,indiceCarta,sockPlayers[0]);
+		// 				sendData("MC",cards,indiceCarta,sockPlayers[1]);
+		// 				sendData("MC",cards,indiceCarta,sockPlayers[2]);
+		// 				if(cards[indiceCarta].card != 0)*/
+		//
+		// 				jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
+		// 			//}
+		// 			break;
+		// 		}
+		//
+		// 		case 3:{
+		// 			//if(strcmp(players[3].ID,myPlayer.ID)==0/* && strcmp(winnerAtMoment,myPlayer.ID)!=0*/){
+		// 				printf("MINHA VEZ GALERA 4º jogador a jogar\n");
+		// 				indiceCarta = whichCardSend(jogadaDaRodada, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
+		// 				/* sendData("MC",cards,pegarMaiorCarta(cards,3),servidor);
+		// 				sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[0]);
+		// 				sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[1]);
+		// 				sendData("MC",cards,pegarMaiorCarta(cards,3),sockPlayers[2]);
+		// 				if(cards[indiceCarta].card != 0)*/
+		//
+		// 				jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
+		// 			//}
+		//
+		// 			/*if(strcmp(message->info,"OK")==0) {
+		// 				printf("\nQUEM VENCEU A PRIMEIRA RODADA FOI: %s\n",winnerAtMoment );
+		//
+		//
+		// 			}*/
+		// 			break;
+		// 		}
+		// 		default:{
+		// 			printf("CAIU DEFAULTTT\n" );
+		// 			break;
+		// 		}
+		// 	}
+		// }
+    // }
+
     if(strcmp(message->info,"TRUCO") == 0) {
       //lógica de aceitar ou não o truco
     }
