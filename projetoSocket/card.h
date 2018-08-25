@@ -335,3 +335,10 @@ int whichCardSend(int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valor
 		return minhaMaior;
 	}
 }
+
+int DevoPedirTruco(card *cards,int indiceCarta,int rodada,int jogadaDaRodada){
+	int truco= rand()%2;
+	printf("%d\n",truco );
+	return truco;
+	//return 1;
+}

@@ -216,6 +216,14 @@ void escondeCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, 
 	cards[indiceCartaJogada].potencia = -1;
 }
 
+void pedirTruco(int servidor){
+	sendData("TRUCO",NULL,0,servidor);
+}
+
+void aceitaTruco(int servidor){
+	sendData("DESCE",NULL,0,servidor);
+}
+
 int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
 	int i;
 
