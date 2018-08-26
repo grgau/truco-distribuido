@@ -131,7 +131,7 @@ int main(int argc, char *argv[ ]) {
 		}
 
 		if(jogadaDaRodada == 0 && contJogadas == jogadaDaRodada && joguei == 0) {
-			indiceCarta = pegarMaiorCarta(cards);
+			indiceCarta = pegarMenorCarta(cards);
 			// printf("jogada: %d, contJogadas: %d\n", jogadaDaRodada, contJogadas);
 
 			jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
