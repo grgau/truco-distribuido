@@ -268,7 +268,7 @@ int pegarDoMeio(card *cards) {
 	}
 }*/
 
-int whichCardSend(int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valorWinnerAtMoment,char *eu, char *parceiro, card *cartas, placar contadorRodada){
+int whichCardSend(int taTrucado, int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valorWinnerAtMoment,char *eu, char *parceiro, card *cartas, placar contadorRodada){
 	int minhaMaior, minhaMenor, cartaMeio;
 
 	//primeira rodada ( Deve-se tentar sempre ganhar a primeira)
@@ -277,14 +277,13 @@ int whichCardSend(int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valor
 		minhaMenor = pegarMenorCarta(cartas/*,3*/);
 		cartaMeio = pegarDoMeio(/*minhaMaior,minhaMenor*/cartas);
 
-		//parceiro esta ganhando
-		if(strcmp(parceiro,WinnerAtMoment)==0){
+		//parceiro esta ganhando ou eu comeco
+		if(strcmp(parceiro,WinnerAtMoment)==0|| jogadaDaRodada==0){
 			//jogar a mais fraca
 			return minhaMenor;
 		}
 		else{
 			//adversario esta ganhando no momento
-
 			//caso seja o primeiro a jogar da dupla
 			if(jogadaDaRodada==1){
 				//se a do meio ganhar: tente
@@ -310,9 +309,8 @@ int whichCardSend(int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valor
 			}
 		}
 	}
-
-//rodada do meio
-	if(rodada==2){
+	else if(rodada==2){
+		//rodada do meio
 		minhaMaior = pegarMaiorCarta(cartas/*,2*/);
 		minhaMenor = pegarMenorCarta(cartas/*,2*/);
 		//tamo ganhando
@@ -328,17 +326,52 @@ int whichCardSend(int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valor
 		}
 		return minhaMaior;
 	}
-
-//ultima rodada
 	if(rodada=3){
+		//ultima rodada
 		minhaMaior = pegarMaiorCarta(cartas/*,1*/);
 		return minhaMaior;
 	}
 }
 
-int DevoPedirTruco(card *cards,int indiceCarta,int rodada,int jogadaDaRodada){
-	int truco= rand()%2;
-	printf("%d\n",truco );
-	return truco;
+int DevoPedirTruco(card *cards,card vira,int rodada, placar contadorRodada){
+	//probabilidade < 0 ( cartas fracas)
+	//probabilidade > 0 ( cartas aceitaveis)
+	int probabilidade = 0;
+
+	card *cartas = cards;
+	organizeCards(cartas, vira);
+
+
+	if(rodada==1){
+		//precisa ter no minimo 2 cartas fortes
+		probabilidade += getPotencia(cartas[0],vira)-6;
+		probabilidade += getPotencia(cartas[1],vira)-6;
+	}
+
+	else if(rodada==2){
+		//se estiver ganhando
+		if(contadorRodada.meuTime==1){
+			//precisa ter 1 carta forte
+			//precisa ter no minimo um As na mao
+			probabilidade += getPotencia(cartas[0],vira)-6;
+
+		}
+		if(contadorRodada.meuTime==0){
+			//precisa ter 2 cartas fortes
+			probabilidade += getPotencia(cartas[0],vira)-7;
+			probabilidade += getPotencia(cartas[1],vira)-7;
+		}
+	}
+
+	else if(rodada==3){
+			//jogo ta empatado
+			//precisa d 1 carta forte
+			probabilidade += getPotencia(cartas[0],vira)-6;
+	}
+
+	//adicionando aleatoriedade (roubo)
+	probabilidade += rand()%4;
+	if(probabilidade>0) return 1;
+	return 0;
 	//return 1;
 }

@@ -224,6 +224,10 @@ void aceitaTruco(int servidor){
 	sendData("DESCE",NULL,0,servidor);
 }
 
+void naoAceitaTruco(int servidor){
+	sendData("FORA",NULL,0,servidor);
+}
+
 int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
 	int i;
 
