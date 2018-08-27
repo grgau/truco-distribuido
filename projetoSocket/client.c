@@ -14,7 +14,6 @@
 #include "card.h"
 #include "data.h"
 
-#define IP_SERVER "127.0.0.1"
 #define PORT_SERVER 14000
 
 int main(int argc, char *argv[ ]) {
@@ -54,7 +53,7 @@ int main(int argc, char *argv[ ]) {
 	port_listening = createPlayersListen();
 
 	//Abrindo conexão com servidor do Aleardo
-  int servidor = createSocket(IP_SERVER, PORT_SERVER);
+  int servidor = createSocket(argv[1], PORT_SERVER);
 
 
 	// Mensagem inicial de entrada do jogador na partida ≪ "ID", endereçoIP, porta ≫, retorna quem sou
@@ -362,6 +361,7 @@ int main(int argc, char *argv[ ]) {
 
     //Destruindo mensagem recebida após cada interação
     message = destroyMessage(message);
+		sleep(2);
   }
   return 0;
 }
