@@ -5,11 +5,11 @@
 #define NUM_BYTES 1024
 
 //Header das funções criadas.
+int createPlayersListen();
 int createSocket(char *, int);
 subs* receiveData(int, subs*);
 player startGame(int, int, player);
 void sendData(char *, card *, int, int);
-int createPlayersListen();
 
 //Includes necessários.
 #include <sys/socket.h>
@@ -37,26 +37,26 @@ char send_data[NUM_BYTES],recv_data[NUM_BYTES];
 
 
 //Funções criadas para esta biblioteca.
+//Cria um socket com o host hostname na porta port.
 int createSocket(char *hostname, int port) {
-
 	host = gethostbyname(hostname);
 
-    if ((newSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        perror("Socket");
-        exit(1);
-    }
+  if ((newSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+      perror("Socket");
+      exit(1);
+  }
 
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(port);
-    server_addr.sin_addr = *((struct in_addr *) host -> h_addr);
-    bzero(&(server_addr.sin_zero),8);
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(port);
+  server_addr.sin_addr = *((struct in_addr *) host -> h_addr);
+  bzero(&(server_addr.sin_zero),8);
 
-    if (connect(newSocket, (struct sockaddr *)&server_addr,sizeof(struct sockaddr)) == -1) {
-        perror("Connect");
-        exit(1);
-    }
+  if (connect(newSocket, (struct sockaddr *)&server_addr,sizeof(struct sockaddr)) == -1) {
+      perror("Connect");
+      exit(1);
+  }
 
-    return newSocket;
+  return newSocket;
 }
 
 //Função que trata dados recebidos
@@ -65,11 +65,6 @@ subs* receiveData(int sock, subs *message) {
   recv_data[bytes_recv] = '\0';
 
   message = structureMessage(message,recv_data,bytes_recv);
-
-/*	if (message != NULL) {
-		printf("%s", message -> info);
-	}
-*/
   return message;
 }
 
@@ -110,7 +105,7 @@ player startGame(int sock, int port_listening, player myPlayer) {
 	return myPlayer;
 }
 
-//Função que trata dados a serem enviados (VAI MUDAR MUITO AINDA)
+//Função que trata dados a serem enviados.
 void sendData(char *comando, card *cards, int index, int sock) {
 	int i;
     char message[15];
@@ -138,6 +133,7 @@ void sendData(char *comando, card *cards, int index, int sock) {
 	send(sock,send_data,strlen(send_data), 0);
 }
 
+//Função que cria o socket para receber dados dos outros jogadores. 
 int createPlayersListen () {
 	int sock, connected, bytes_recv, true = 1;
 	struct sockaddr_in server_addr, client_addr;
@@ -173,23 +169,10 @@ int createPlayersListen () {
 			exit(1);
 	}
 
-	// Pega a porta que o sistema operacional atribuiu e poe na variavel port_listen
-	/*bzero(&my_addr, sizeof(my_addr));
-	int len = sizeof(my_addr);
-	getsockname(sock, (struct sockaddr *) &my_addr, &len);
-	inet_ntop(AF_INET, &server_addr.sin_addr, myIP, sizeof(myIP));
-	port_listen = ntohs(my_addr.sin_port);*/
-
 	printf("\nTCPServer Waiting for client on port %d\n", port_listen);
 	fflush(stdout);
 
 	return port_listen;
 }
-
-
-
-/////////////////////////////////////PRECISO VER ONDE COLOCAR ISSO depois
-
-
 
 #endif

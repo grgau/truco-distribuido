@@ -11,8 +11,8 @@ typedef struct player {
 } player;
 
 //Header das funções criadas.
-void receivePlayers(subs *, player *);
 void displayPlayers(player *);
+void receivePlayers(subs *, player *);
 player whoIsMyPartner(player *, player);
 
 //Funções criadas para esta biblioteca.
@@ -37,6 +37,7 @@ void displayPlayers(player *players) {
 	}
 }
 
+//Função que verifica o jogador parceiro.
 player whoIsMyPartner (player *players, player myPlayer) {
   int i;
 

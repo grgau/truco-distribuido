@@ -16,21 +16,24 @@ typedef struct placar {
 
 
 //Header das funções criadas.
-void cardString(char *, int);
-int cardNumber(char *);
-void receiveCards(subs *, card *);
-int getPotencia(card, card);
-void organizeCards(card *, card);
-card receiveVira(subs *, card, char *);
-card receiveCard(subs *, card);
-void displayCards(card *);
-void displayVira(card, char *);
-void displayCard(card);
-void jogaCarta(card *, int, int, int, int *);
-void escondeCarta(card *, int, int, int, int *);
 void pedirTruco(int);
 void aceitaTruco(int);
+void displayCard(card);
+int cardNumber(char *);
+int pegarDoMeio(card *);
 void naoAceitaTruco(int);
+void displayCards(card *);
+int pegarMaiorCrta(card *);
+int pegarMenorCarta(card *);
+int getPotencia(card, card);
+void cardString(char *, int);
+card receiveCard(subs *, card);
+void displayVira(card, char *);
+void organizeCards(card *, card);
+void receiveCards(subs *, card *);
+card receiveVira(subs *, card, char *);
+void jogaCarta(card *, int, int, int, int *);
+void escondeCarta(card *, int, int, int, int *);
 int findJogada(char *, player, player, player *);
 
 
@@ -41,35 +44,32 @@ int findJogada(char *, player, player, player *);
 
 
 //Declaração das funções.
-
+//Passa o numero da carta para string.
 void cardString(char *card, int number) {
 	sprintf(card,"%d",number);
 }
 
+//Transforma o string card em int.
 int cardNumber(char *card) {
 	char number[3];
-
-	memset(number, 0, sizeof number);	// Limpa vetor number (corrige bug de aparecer um caracter a mais nas cartas após receber um 10)
-
 	int i=1;
 
+	memset(number, 0, sizeof number);
 	while(card[i] != '\0') {
-		//printf("cardNumber[%d]: %c\n", i, card[i]);			//Coloquei isso aqui pra debugar caso o bug do 80 aparecer dnv.
 		number[i-1] = card[i];
 		i++;
 	}
 	number[i] = '\0';
-
-
 	return atoi(number);
 }
 
+//Recebe as cartas, fazendo o tratamento das strings para o tipo cards.
 void receiveCards(subs *message,card *cards) {
 	int i;
 	for (i=0;i<3;i++) {
 		cards[i].suit = message->info[0];
 		cards[i].card = cardNumber(message->info);
-		cards[i].potencia = -1;	// Inicia potencia da carta com 0, será modificada após receber o vira
+		cards[i].potencia = -1;	// Inicia potencia da carta com -1, será modificada após receber o vira
 		message = message->prox;
 	}
 }
@@ -78,10 +78,9 @@ void receiveCards(subs *message,card *cards) {
 int getPotencia(card carta, card vira){
 	int potencia, potVira, potManilha;
 
-	// potVira = (vira.card + 6) % 10;
 	potencia = (carta.card + 6) %10; 						//Assim o 4 tem valor de 0, 5 tem valor de 1, etc, seguindo pela ordem de "potencia".
 	potManilha = (vira.card + 7) % 10;
-	if(potencia == (potManilha)){								//Verifica se a carta atual é manilha{
+	if(potencia == (potManilha)){								//Verifica se a carta atual é manilha
 		potencia = 9;
 		switch((carta.suit)){
 			case 'P':
@@ -94,27 +93,24 @@ int getPotencia(card carta, card vira){
 				potencia++;
 		}
 	}
-		else
-		if(potManilha <= potencia){												//Se já passou da "potencia" da manilha, as cartas para frente possuem um grau a menos de potencia.
-			// printf("Entrou aqui!");
-			potencia--;
-		}
-		return potencia;
+	else
+	if(potManilha <= potencia){												//Se já passou da "potencia" da manilha, as cartas para frente possuem um grau a menos de potencia.
+		potencia--;
 	}
+	return potencia;
+}
 
+//Organiza as cartas da mão em ordem crescente de potencia.
 void organizeCards(card *cards, card vira){
 	card aux;
 	int i, j, potCartaAtual, potAux, indice;
-
-	// potAux = getPotencia(cards[0], vira);
 
 	// Ordena as cartas
 	for(i = 0; i<3; i++) {
 		potAux = getPotencia(cards[i], vira);
 		indice = i;
-		for(j = 0; j < 3; j++){												//Esse for serve só pra printar a ordem de potencia atual das cartas na ordenação pra eu ver se tava certo. Pode comentar/tirar se precisar.
+		for(j = 0; j < 3; j++){
 			cards[j].potencia = getPotencia(cards[j], vira);	// Atribui as potencias pra cada carta
-			//printf("Carta %c%d - Potencia : %d\n", cards[j].suit, cards[j].card, cards[j].potencia);
 		}
 		for(j = i; j < 3; j++){
 			potCartaAtual = getPotencia(cards[j], vira);
@@ -124,7 +120,6 @@ void organizeCards(card *cards, card vira){
 			}
 		}
 
-		//printf("O indice que será trocado é: %d\n", indice);
 		aux.card = cards[i].card;
 		aux.suit = cards[i].suit;
 		aux.potencia = cards[i].potencia;
@@ -137,7 +132,7 @@ void organizeCards(card *cards, card vira){
 	}
 }
 
-
+//Faz o tratamento da carta VIRA para o tipo card e também salva qual jogador será o primeiro pelo ID.
 card receiveVira(subs *message, card vira, char *IDStart) {
 	vira.suit = message->info[0];
 	vira.card = cardNumber(message->info);
@@ -145,12 +140,14 @@ card receiveVira(subs *message, card vira, char *IDStart) {
 	return vira;
 }
 
+//Faz o tratamento de uma carta para o tipo card.
 card receiveCard(subs *message, card carta){
 	carta.suit = message->info[0];
 	carta.card = cardNumber(message->info);
 	return carta;
 }
 
+//Printa informações sobre a carta.
 void displayCards(card *cards) {
 	int i;
 	printf("\nCards:\n");
@@ -159,49 +156,18 @@ void displayCards(card *cards) {
 	}
 }
 
+//Printa informações sobre a VIRA.
 void displayVira(card vira, char *IDStart) {
 	printf("\nVira:\n  Card: %d\n  Suit: %c\n  IDStart: %s\n\n", vira.card, vira.suit, IDStart);
 }
 
+//Printa informações sobre a carta.
 void displayCard(card carta) {
 	printf("\nCarta:\n  Card: %d\n  Suit: %c\n\n", carta.card, carta.suit);
 }
 
-
-
-/*int valorCarta(card *carta){
- int valor =0;
-   if(strcmp(&carta->suit,"P")==0){
-    valor=30;
-   }
-   else if(strcmp(&carta->suit,"C")==0){
-   valor=20;
-   }
-   else if(strcmp(&carta->suit,"E")==0){
-   valor=10;
-   }
-   else if(strcmp(&carta->suit,"O")==0){
-   valor=0;
-   }
-   valor = valor + carta->card;
- return valor;
-
-}*/
-
-/*int pegarMaiorCarta(card *cards, int quantCartas){
-	card *cartas = cards;
-	int maiorValor = 0, indice=0,valor=0;
-	for (int i=0;i<quantCartas;i++){
-		valor = valorCarta(&cartas[i]);
-		if(valor>maiorValor){
-			maiorValor = valor;
-			indice=i;
-		}
-	}
-	return indice;
-}*/
-
-int pegarMaiorCarta(card *cards) {	// Retorna primeira carta da mão ordenada, isto é, a maior
+// Retorna primeira carta da mão ordenada, isto é, a maior
+int pegarMaiorCarta(card *cards) {
 	int indice;
 
 	if(cards[0].card != 0) {
@@ -221,7 +187,8 @@ int pegarMaiorCarta(card *cards) {	// Retorna primeira carta da mão ordenada, i
 	}
 }
 
-int pegarMenorCarta(card *cards) {	// Retorna menor carta, tratando caso de cartas descartadas
+// Retorna menor carta, tratando caso de cartas descartadas
+int pegarMenorCarta(card *cards) {
 	int indice;
 
 	if(cards[2].card != 0) {	// Se ainda tiver a ultima carta da mao, retorna ela
@@ -241,6 +208,7 @@ int pegarMenorCarta(card *cards) {	// Retorna menor carta, tratando caso de cart
 	}
 }
 
+// Retorna a carta média, tratando caso de cartas descartadas
 int pegarDoMeio(card *cards) {
 	int indice;
 
@@ -261,57 +229,18 @@ int pegarDoMeio(card *cards) {
 	}
 }
 
-/*int pegarMenorCarta(card *cards, int quantCartas){
-	card *cartas = cards;
-	int menorValor = 0, indice=0,valor=0;
-	for (int i=0;i<quantCartas;i++){
-		valor = valorCarta(&cartas[i]);
-		if(valor<menorValor){
-			menorValor = valor;
-			indice=i;
-		}
-	}
-	return indice;
-}*/
-
-/*int pegarDoMeio(int maior, int menor){
-	if(maior==0){
-		if(menor==1){
-			return 2;
-		}
-		if(menor==2){
-			return 1;
-		}
-	}
-	if(maior==1){
-		if(menor==0){
-			return 2;
-		}
-		if(menor==2){
-			return 1;
-		}
-	}
-	if(maior==2){
-		if(menor==0){
-			return 1;
-		}
-		if(menor==1){
-			return 0;
-		}
-	}
-}*/
-
+//Faz a decisão de qual carta jogar.
 int whichCardSend(int taTrucado, int jogadaDaRodada, int rodada, char *WinnerAtMoment,int valorWinnerAtMoment,char *eu, char *parceiro, card *cartas, placar contadorRodada){
 	int minhaMaior, minhaMenor, cartaMeio;
 
 	//primeira rodada ( Deve-se tentar sempre ganhar a primeira)
 	if(rodada == 1){
-		minhaMaior = pegarMaiorCarta(cartas/*,3*/);
-		minhaMenor = pegarMenorCarta(cartas/*,3*/);
-		cartaMeio = pegarDoMeio(/*minhaMaior,minhaMenor*/cartas);
+		minhaMaior = pegarMaiorCarta(cartas);
+		minhaMenor = pegarMenorCarta(cartas);
+		cartaMeio = pegarDoMeio(cartas);
 
 		//parceiro esta ganhando ou eu comeco
-		if(strcmp(parceiro,WinnerAtMoment)==0|| jogadaDaRodada==0){
+		if(strcmp(parceiro,WinnerAtMoment)==0 || jogadaDaRodada==0){
 			//jogar a mais fraca
 			return minhaMenor;
 		}
@@ -344,9 +273,9 @@ int whichCardSend(int taTrucado, int jogadaDaRodada, int rodada, char *WinnerAtM
 	}
 	else if(rodada==2){
 		//rodada do meio
-		minhaMaior = pegarMaiorCarta(cartas/*,2*/);
-		minhaMenor = pegarMenorCarta(cartas/*,2*/);
-		//tamo ganhando
+		minhaMaior = pegarMaiorCarta(cartas);
+		minhaMenor = pegarMenorCarta(cartas);
+		//nosso time está ganhando na pontuação.
 		if(contadorRodada.meuTime==1){
 			//só pode ser na jogadaDaRodada = 3
 			if(cartas[minhaMenor].potencia > valorWinnerAtMoment){
@@ -361,14 +290,13 @@ int whichCardSend(int taTrucado, int jogadaDaRodada, int rodada, char *WinnerAtM
 	}
 	if(rodada=3){
 		//ultima rodada
-		minhaMaior = pegarMaiorCarta(cartas/*,1*/);
+		minhaMaior = pegarMaiorCarta(cartas);
 		return minhaMaior;
 	}
 }
 
-int DevoPedirTruco(card *cards,card vira,int rodada, placar contadorRodada){
-	//probabilidade < 0 ( cartas fracas)
-	//probabilidade > 0 ( cartas aceitaveis)
+//Verifica a necessidade (ou não) de pedir truco.
+int devoPedirTruco(card *cards,card vira,int rodada, placar contadorRodada){
 	int probabilidade = 0;
 
 	card *cartas = cards;
@@ -377,94 +305,87 @@ int DevoPedirTruco(card *cards,card vira,int rodada, placar contadorRodada){
 
 	if(rodada==1){
 		//precisa ter no minimo 2 cartas fortes
-		probabilidade += getPotencia(cartas[0],vira)-6;
-		probabilidade += getPotencia(cartas[1],vira)-6;
+		probabilidade += getPotencia(cartas[0],vira)-7;
+		probabilidade += getPotencia(cartas[1],vira)-7;
 	}
 
 	else if(rodada==2){
 		//se estiver ganhando
 		if(contadorRodada.meuTime==1){
 			//precisa ter 1 carta forte
-			//precisa ter no minimo um As na mao
-			probabilidade += getPotencia(cartas[0],vira)-6;
+			probabilidade += getPotencia(cartas[0],vira)-7;
 
 		}
 		if(contadorRodada.meuTime==0){
 			//precisa ter 2 cartas fortes
-			probabilidade += getPotencia(cartas[0],vira)-7;
-			probabilidade += getPotencia(cartas[1],vira)-7;
+			probabilidade += getPotencia(cartas[0],vira)-8;
+			probabilidade += getPotencia(cartas[1],vira)-8;
 		}
 	}
 
 	else if(rodada==3){
-			//jogo ta empatado
-			//precisa d 1 carta forte
-			probabilidade += getPotencia(cartas[0],vira)-6;
+			//jogo está empatado
+			//precisa ter 1 carta forte
+			probabilidade += getPotencia(cartas[0],vira)-8;
 	}
 
+
+	//probabilidade < 0 ( cartas fracas)
+	//probabilidade > 0 ( cartas aceitaveis)
+
 	//adicionando aleatoriedade (roubo)
-	probabilidade += rand()%4;
+	probabilidade -= rand()%3;
 	if(probabilidade>0) return 1;
 	return 0;
-	//return 1;
 }
 
 
-////////////////////////////////////////////////////////
 //Função que joga a carta na posição pos da mão, levando em consideração o numero de jogadas já feitas.
 void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
 	int i;
 
 	//Envia a carta escolhida para os demais jogadores e para o servidor.
-
 	sendData("MC", cards, indiceCartaJogada, servidor);
 	sendData("MC", cards, indiceCartaJogada, sockPlayers[0]);
 	sendData("MC", cards, indiceCartaJogada, sockPlayers[1]);
 	sendData("MC", cards, indiceCartaJogada, sockPlayers[2]);
 
-	//"Limpa" a mão.
-	/*if(indiceCartaJogada != 2)
-		for(i = indiceCartaJogada; i < 3-rodada; i++)
-			cards[i] = cards[i+1];*/
-
 	cards[indiceCartaJogada].suit = '-';
 	cards[indiceCartaJogada].card = 0;
 	cards[indiceCartaJogada].potencia = -1;
 }
 
-//deve mandar NULL pros players e a carta pro servidor
+//Função que manda NULL pros players e a carta pro servidor.
 void escondeCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
 	int i;
 
 	//Envia a carta escolhida para os demais jogadores e para o servidor.
-
 	sendData("EC", cards, indiceCartaJogada, servidor);
 	sendData("EC", NULL, indiceCartaJogada, sockPlayers[0]);
 	sendData("EC", NULL, indiceCartaJogada, sockPlayers[1]);
 	sendData("EC", NULL, indiceCartaJogada, sockPlayers[2]);
 
-	//"Limpa" a mão.
-	/*if(indiceCartaJogada != 2)
-		for(i = indiceCartaJogada; i < 3-rodada; i++)
-			cards[i] = cards[i+1];*/
-
 	cards[indiceCartaJogada].suit = '-';
 	cards[indiceCartaJogada].card = 0;
 	cards[indiceCartaJogada].potencia = -1;
 }
 
+//Pede truco.
 void pedirTruco(int servidor){
 	sendData("TRUCO",NULL,0,servidor);
 }
 
+//Aceita truco.
 void aceitaTruco(int servidor){
 	sendData("DESCE",NULL,0,servidor);
 }
 
+//Não aceita o truco.
 void naoAceitaTruco(int servidor){
 	sendData("FORA",NULL,0,servidor);
 }
 
+//Retorna qual jogada estamos da rodada. 
 int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
 	int i;
 

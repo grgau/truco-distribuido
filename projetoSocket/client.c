@@ -177,8 +177,8 @@ int main(int argc, char *argv[ ]) {
 				//printf("\n\nentrou if\n\n");
 			switch(jogadaDaRodada){
 				case 1: {
-					printf("MINHA VEZ GALERA 2º jogador a jogar\n");
-					  if(DevoPedirTruco(cards,vira,rodada,contadorRodada)==1 && taTrucado==0){
+					printf("2º jogador a jogar\n");
+					  if(devoPedirTruco(cards,vira,rodada,contadorRodada)==1 && taTrucado==0){
 							pedirTruco(servidor);
 							message = destroyMessage(message);
 							message = receiveData(servidor,message);
@@ -186,14 +186,12 @@ int main(int argc, char *argv[ ]) {
 							printf("1\n" );
 							if(strcmp(message->info,"DESCE") == 0) {
 								//lógica de ir pro truco
-								printf("OS CARA DESCEUU MANO!!!\n" );
 								taTrucado=1;
 								printf("2\n" );
 
 							}
 							if(strcmp(message->info,"FORA") == 0) {
 								//lógica de fim de rodada
-								printf("OS COMEDIA CORRERAM KKKKKK !!!\n" );
 								printf("3\n" );
 								for(int i=0;i<3;i++){
 									cards[i].suit = '-';
@@ -221,7 +219,6 @@ int main(int argc, char *argv[ ]) {
 						}
 						indiceCarta = whichCardSend(taTrucado,contJogadas, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 						if(indiceCarta==pegarMenorCarta(cards) && rodada!=1 && (rand()%3<=1) ){
-							printf("!!!VOU ESCONDER CAMBADA, SEIS NAO AGUENTA!!!\n");
 							escondeCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 						}
 						else
@@ -232,8 +229,8 @@ int main(int argc, char *argv[ ]) {
 				}
 
 				case 2:{
-										printf("MINHA VEZ GALERA 3º jogador a jogar\n");
-					if(DevoPedirTruco(cards,vira,rodada,contadorRodada)==1 && taTrucado==0){
+					printf("3º jogador a jogar\n");
+					if(devoPedirTruco(cards,vira,rodada,contadorRodada)==1 && taTrucado==0){
 						pedirTruco(servidor);
 						message = destroyMessage(message);
 						message = receiveData(servidor,message);
@@ -242,13 +239,11 @@ int main(int argc, char *argv[ ]) {
 						printf("1.2\n" );
 						if(strcmp(message->info,"DESCE") == 0) {
 							//lógica de ir pro truco
-							printf("OS CARA DESCEUU MANO!!!\n" );
 							taTrucado=1;
 							printf("2.2\n" );
 						}
 						if(strcmp(message->info,"FORA") == 0) {
 							//lógica de fim de rodada
-							printf("OS COMEDIA CORRERAM KKKKKK !!!\n" );
 							printf("3.2\n" );
 							for(int i=0;i<3;i++){
 								cards[i].suit = '-';
@@ -274,7 +269,6 @@ int main(int argc, char *argv[ ]) {
 					}
 					indiceCarta = whichCardSend(taTrucado,contJogadas, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 					if(indiceCarta==pegarMenorCarta(cards) && rodada!=1 && (rand()%3<=1) ){
-						printf("!!!VOU ESCONDER CAMBADA, SEIS NAO AGUENTA!!!\n");
 						escondeCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					}
 					else
@@ -283,8 +277,8 @@ int main(int argc, char *argv[ ]) {
 				}
 
 				case 3:{
-										printf("MINHA VEZ GALERA 4º jogador a jogar\n");
-					if(DevoPedirTruco(cards,vira,rodada,contadorRodada)==1 && taTrucado==0){
+					printf("4º jogador a jogar\n");
+					if(devoPedirTruco(cards,vira,rodada,contadorRodada)==1 && taTrucado==0){
 						pedirTruco(servidor);
 						message = destroyMessage(message);
 						message = receiveData(servidor,message);
@@ -293,14 +287,11 @@ int main(int argc, char *argv[ ]) {
 						printf("1.3\n" );
 						if(strcmp(message->info,"DESCE") == 0) {
 							//lógica de ir pro truco
-							printf("OS CARA DESCEUU MANO!!!\n" );
 							taTrucado=1;
 							printf("2.3\n" );
 						}
 						if(strcmp(message->info,"FORA") == 0) {
 							//lógica de fim de rodada
-							printf("OS COMEDIA CORRERAM KKKKKK !!!\n" );
-							printf("3.3\n" );
 							for(int i=0;i<3;i++){
 								cards[i].suit = '-';
 								cards[i].card = 0;
@@ -325,7 +316,7 @@ int main(int argc, char *argv[ ]) {
 					}
 					indiceCarta = whichCardSend(taTrucado,contJogadas, rodada, winnerAtMoment, valorWinnerAtMoment,myPlayer.ID,myPartner.ID,cards, contadorRodada);
 					if(indiceCarta==pegarMenorCarta(cards) && rodada!=1 && (rand()%3<=1) ){
-						printf("!!!VOU ESCONDER CAMBADA, SEIS NAO AGUENTA!!!\n");
+						printf("Vou esconder a carta\n");
 						escondeCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 					}
 					else
@@ -333,7 +324,6 @@ int main(int argc, char *argv[ ]) {
 					  break;
 					}
 				default:{
-					printf("CAIU DEFAULTTT\n" );
 					break;
 				}
 			}
@@ -345,8 +335,7 @@ int main(int argc, char *argv[ ]) {
 
     if(strcmp(message->info,"TRUCO") == 0) {
       //lógica de aceitar ou não o truco
-			printf("A DESGRAMA TRUCOU EM MIM CABOCLO!!!\n" );
-			//analisarPedidoTruco
+
 			taTrucado=1;
 			int idParceiro;
 
@@ -365,19 +354,18 @@ int main(int argc, char *argv[ ]) {
 				}
 			}
 			if(idParceiro==contJogadas){
-				printf("MEU PARCEIRO TRUCOU\n" );
-				//naoAceitaTruco(servidor);
+				printf("O nosso grupo trucou\n" );
 			}
 			else{
-				printf("ADVERSARIO TRUCOU\n" );
-				//a funcao DevoPedirTruco pode ser usada para aceitar o truco tbm
-				int resposta = DevoPedirTruco(cards,vira,rodada,contadorRodada);
+				printf("O grupo adversário trucou\n" );
+				//a funcao devoPedirTruco pode ser usada para aceitar o truco tambem.
+				int resposta = devoPedirTruco(cards,vira,rodada,contadorRodada);
 				if(resposta==1){
 					aceitaTruco(servidor);
-					printf("ACEITEI\n" );
+					printf("Aceitei\n" );
 				}else{
 					naoAceitaTruco(servidor);
-					printf("CORRI\n" );
+					printf("Corri\n" );
 
 				}
 

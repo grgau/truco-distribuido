@@ -10,9 +10,9 @@ typedef struct subs {
 } subs;
 
 //Header das funções criadas.
-subs* newSubs(subs *, char *);
 void displayMessage(subs *);
 subs* destroyMessage(subs *);
+subs* newSubs(subs *, char *);
 subs *structureMessage(subs *, char [], int);
 
 //Funções criadas para esta biblioteca.
