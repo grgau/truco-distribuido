@@ -1,9 +1,21 @@
+#ifndef PLAYER_H
+
+//Defines necessários para esta biblioteca.
+#define PLAYER_H PLAYER_H
+
+//Estruturas referentes ao tipo player.
 typedef struct player {
     char ID[10];
     char ip[16];
     char port[10];
 } player;
 
+//Header das funções criadas.
+void receivePlayers(subs *, player *);
+void displayPlayers(player *);
+player whoIsMyPartner(player *, player);
+
+//Funções criadas para esta biblioteca.
 //Função que recebe mensagem separada e armazena players
 void receivePlayers(subs *message, player *players) {
 	int i;
@@ -39,3 +51,5 @@ player whoIsMyPartner (player *players, player myPlayer) {
     }
   }
 }
+
+#endif

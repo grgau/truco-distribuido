@@ -1,3 +1,17 @@
+#ifndef DATA_H
+
+//Defines das constantes necessárias.
+#define DATA_H DATA_H
+#define NUM_BYTES 1024
+
+//Header das funções criadas.
+int createSocket(char *, int);
+subs* receiveData(int, subs*);
+player startGame(int, int, player);
+void sendData(char *, card *, int, int);
+int createPlayersListen();
+
+//Includes necessários.
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -9,19 +23,20 @@
 #include <unistd.h>
 #include <errno.h>
 #include <time.h>
-
 #include "subs.h"
-#include "card.h"
 #include "player.h"
+#include "card.h"
 
-#define NUM_BYTES 1024
 
+//Variáveis globais.
 int newSocket;
 struct hostent *host;
 struct sockaddr_in server_addr, my_addr;
 int bytes_recv;
 char send_data[NUM_BYTES],recv_data[NUM_BYTES];
 
+
+//Funções criadas para esta biblioteca.
 int createSocket(char *hostname, int port) {
 
 	host = gethostbyname(hostname);
@@ -174,140 +189,7 @@ int createPlayersListen () {
 
 
 /////////////////////////////////////PRECISO VER ONDE COLOCAR ISSO depois
-//Função que joga a carta na posição pos da mão, levando em consideração o numero de jogadas já feitas.
-void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
-	int i;
-
-	//Envia a carta escolhida para os demais jogadores e para o servidor.
-
-	sendData("MC", cards, indiceCartaJogada, servidor);
-	sendData("MC", cards, indiceCartaJogada, sockPlayers[0]);
-	sendData("MC", cards, indiceCartaJogada, sockPlayers[1]);
-	sendData("MC", cards, indiceCartaJogada, sockPlayers[2]);
-
-	//"Limpa" a mão.
-	/*if(indiceCartaJogada != 2)
-		for(i = indiceCartaJogada; i < 3-rodada; i++)
-			cards[i] = cards[i+1];*/
-
-	cards[indiceCartaJogada].suit = '-';
-	cards[indiceCartaJogada].card = 0;
-	cards[indiceCartaJogada].potencia = -1;
-}
-
-//deve mandar NULL pros players e a carta pro servidor
-void escondeCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
-	int i;
-
-	//Envia a carta escolhida para os demais jogadores e para o servidor.
-
-	sendData("EC", cards, indiceCartaJogada, servidor);
-	sendData("EC", NULL, indiceCartaJogada, sockPlayers[0]);
-	sendData("EC", NULL, indiceCartaJogada, sockPlayers[1]);
-	sendData("EC", NULL, indiceCartaJogada, sockPlayers[2]);
-
-	//"Limpa" a mão.
-	/*if(indiceCartaJogada != 2)
-		for(i = indiceCartaJogada; i < 3-rodada; i++)
-			cards[i] = cards[i+1];*/
-
-	cards[indiceCartaJogada].suit = '-';
-	cards[indiceCartaJogada].card = 0;
-	cards[indiceCartaJogada].potencia = -1;
-}
-
-void pedirTruco(int servidor){
-	sendData("TRUCO",NULL,0,servidor);
-}
-
-void aceitaTruco(int servidor){
-	sendData("DESCE",NULL,0,servidor);
-}
-
-void naoAceitaTruco(int servidor){
-	sendData("FORA",NULL,0,servidor);
-}
-
-int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
-	int i;
-
-	if (strcmp(IDStart, myPlayer.ID) == 0) {	// Se eu for quem começa
-		return 0;
-	}
-	else {
-		for (i=0; i<4; i++) {
-			if (strcmp(IDStart, players[i].ID) == 0) { // Achei quem começa
-				switch (i) {
-					case 0: {
-						if (strcmp(IDStart, myPartner.ID) == 0)
-							return 2;
-						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
-							return 1;
-						else
-							return 3;
-					break;
-					}
-					case 1: {
-						if (strcmp(IDStart, myPartner.ID) == 0)
-							return 2;
-						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
-							return 1;
-						else
-							return 3;
-					break;
-					}
-					case 2: {
-						if (strcmp(IDStart, myPartner.ID) == 0)
-							return 2;
-						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
-							return 1;
-						else
-							return 3;
-					break;
-					}
-					case 3: {
-						if (strcmp(IDStart, myPartner.ID) == 0)
-							return 2;
-						else if (strcmp(players[i-1].ID, myPlayer.ID) == 0)
-							return 3;
-						else
-							return 1;
-					}
-				}
-			}
 
 
 
-
-
-
-				/*if (strcmp(IDStart, myPartner.ID) != 0 && strcmp(IDStart, players[3].ID) != 0) { // Se eu nao for parceiro dele
-					if (strcmp(players[i+1].ID, myPlayer.ID) == 0) {	// Se eu sou depois dele
-						return 1;
-						//jogadaDaRodada--;
-					}
-					else {	// Se eu sou antes dele
-						return 3;
-						//jogadaDaRodada--;
-					}
-					if (strcmp(IDStart, players[3].ID) == 0) {
-						if (strcmp(players[i-1].ID, myPlayer.ID) == 0) {
-							return 3;
-							//jogadaDaRodada--;
-						}
-						else {
-							return 1;
-							//jogadaDaRodada--;
-						}
-					}
-				}
-				else { // Sou parceiro de quem começa
-					if (i == 0)
-						return 2;
-					else
-						return 0;
-				}
-			}*/
-		}
-	}
-}
+#endif

@@ -1,5 +1,18 @@
-#include "data.h"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
 #include <time.h>
+#include "subs.h"
+#include "player.h"
+#include "card.h"
+#include "data.h"
 
 #define IP_SERVER "127.0.0.1"
 #define PORT_SERVER 14000

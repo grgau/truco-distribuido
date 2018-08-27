@@ -1,8 +1,21 @@
+#ifndef SUBS_H
+
+//Defines necessários para esta biblioteca.
+#define SUBS_H SUBS_H
+
+//Estrutura referente ao tipo subs.
 typedef struct subs {
 	char info[15];
 	struct subs *prox;
 } subs;
 
+//Header das funções criadas.
+subs* newSubs(subs *, char *);
+void displayMessage(subs *);
+subs* destroyMessage(subs *);
+subs *structureMessage(subs *, char [], int);
+
+//Funções criadas para esta biblioteca.
 //Função pra adicionar substrings a estrutura message
 subs* newSubs(subs *message,char *substring) {
 	subs *aux = message, *nova = (subs*) malloc(sizeof(subs));
@@ -66,3 +79,5 @@ subs* structureMessage(subs *message,char recv_data[],int bytes_recv) {
 
   return message;
 }
+
+#endif

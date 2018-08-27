@@ -1,3 +1,8 @@
+#ifndef CARDS_H
+#define CARDS_H CARDS_H
+
+
+//Estruturas referentes ao tipo card.
 typedef struct card {
 	int card;
 	char suit;
@@ -8,6 +13,34 @@ typedef struct placar {
 	int meuTime;
 	int timeInimigo;
 } placar;
+
+
+//Header das funções criadas.
+void cardString(char *, int);
+int cardNumber(char *);
+void receiveCards(subs *, card *);
+int getPotencia(card, card);
+void organizeCards(card *, card);
+card receiveVira(subs *, card, char *);
+card receiveCard(subs *, card);
+void displayCards(card *);
+void displayVira(card, char *);
+void displayCard(card);
+void jogaCarta(card *, int, int, int, int *);
+void escondeCarta(card *, int, int, int, int *);
+void pedirTruco(int);
+void aceitaTruco(int);
+void naoAceitaTruco(int);
+int findJogada(char *, player, player, player *);
+
+
+//Includes necessários.
+#include <stdio.h>
+#include "data.h"
+#include "player.h"
+
+
+//Declaração das funções.
 
 void cardString(char *card, int number) {
 	sprintf(card,"%d",number);
@@ -375,3 +408,112 @@ int DevoPedirTruco(card *cards,card vira,int rodada, placar contadorRodada){
 	return 0;
 	//return 1;
 }
+
+
+////////////////////////////////////////////////////////
+//Função que joga a carta na posição pos da mão, levando em consideração o numero de jogadas já feitas.
+void jogaCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
+	int i;
+
+	//Envia a carta escolhida para os demais jogadores e para o servidor.
+
+	sendData("MC", cards, indiceCartaJogada, servidor);
+	sendData("MC", cards, indiceCartaJogada, sockPlayers[0]);
+	sendData("MC", cards, indiceCartaJogada, sockPlayers[1]);
+	sendData("MC", cards, indiceCartaJogada, sockPlayers[2]);
+
+	//"Limpa" a mão.
+	/*if(indiceCartaJogada != 2)
+		for(i = indiceCartaJogada; i < 3-rodada; i++)
+			cards[i] = cards[i+1];*/
+
+	cards[indiceCartaJogada].suit = '-';
+	cards[indiceCartaJogada].card = 0;
+	cards[indiceCartaJogada].potencia = -1;
+}
+
+//deve mandar NULL pros players e a carta pro servidor
+void escondeCarta(card *cards, int indiceCartaJogada, int rodada, int servidor, int *sockPlayers){
+	int i;
+
+	//Envia a carta escolhida para os demais jogadores e para o servidor.
+
+	sendData("EC", cards, indiceCartaJogada, servidor);
+	sendData("EC", NULL, indiceCartaJogada, sockPlayers[0]);
+	sendData("EC", NULL, indiceCartaJogada, sockPlayers[1]);
+	sendData("EC", NULL, indiceCartaJogada, sockPlayers[2]);
+
+	//"Limpa" a mão.
+	/*if(indiceCartaJogada != 2)
+		for(i = indiceCartaJogada; i < 3-rodada; i++)
+			cards[i] = cards[i+1];*/
+
+	cards[indiceCartaJogada].suit = '-';
+	cards[indiceCartaJogada].card = 0;
+	cards[indiceCartaJogada].potencia = -1;
+}
+
+void pedirTruco(int servidor){
+	sendData("TRUCO",NULL,0,servidor);
+}
+
+void aceitaTruco(int servidor){
+	sendData("DESCE",NULL,0,servidor);
+}
+
+void naoAceitaTruco(int servidor){
+	sendData("FORA",NULL,0,servidor);
+}
+
+int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
+	int i;
+
+	if (strcmp(IDStart, myPlayer.ID) == 0) {	// Se eu for quem começa
+		return 0;
+	}
+	else {
+		for (i=0; i<4; i++) {
+			if (strcmp(IDStart, players[i].ID) == 0) { // Achei quem começa
+				switch (i) {
+					case 0: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
+							return 1;
+						else
+							return 3;
+					break;
+					}
+					case 1: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
+							return 1;
+						else
+							return 3;
+					break;
+					}
+					case 2: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i+1].ID, myPlayer.ID) == 0)
+							return 1;
+						else
+							return 3;
+					break;
+					}
+					case 3: {
+						if (strcmp(IDStart, myPartner.ID) == 0)
+							return 2;
+						else if (strcmp(players[i-1].ID, myPlayer.ID) == 0)
+							return 3;
+						else
+							return 1;
+					}
+				}
+			}
+		}
+	}
+}
+
+#endif
