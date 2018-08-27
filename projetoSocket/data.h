@@ -133,7 +133,7 @@ void sendData(char *comando, card *cards, int index, int sock) {
 	send(sock,send_data,strlen(send_data), 0);
 }
 
-//Função que cria o socket para receber dados dos outros jogadores. 
+//Função que cria o socket para receber dados dos outros jogadores.
 int createPlayersListen () {
 	int sock, connected, bytes_recv, true = 1;
 	struct sockaddr_in server_addr, client_addr;
@@ -160,7 +160,7 @@ int createPlayersListen () {
 	bzero(&(server_addr.sin_zero),8);
 
 	if (bind(sock, (struct sockaddr *)&server_addr,sizeof(struct sockaddr)) == -1) {
-		perror("Unable to bind");
+		perror("Tente novamente.\n");
 		exit(1);
 	}
 

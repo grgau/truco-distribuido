@@ -91,7 +91,6 @@ int main(int argc, char *argv[ ]) {
 		// Mensagem de CARTA vinda do servidor, define as cartas da mão recebidas
     if(strcmp(message->info,"CARTA") == 0) {
     	receiveCards(message->prox,cards);
-    	//displayCards(cards);
     }
 
 		// Mensagem de VIRA vinda do servidor, define qual a carta de vira
@@ -121,15 +120,10 @@ int main(int argc, char *argv[ ]) {
 				contadorRodada.meuTime++;
 			else
 				contadorRodada.timeInimigo++;
-			// printf("\nPlacar da rodada: meuTime: %d - timeInimigo: %d\n", contadorRodada.meuTime, contadorRodada.timeInimigo);
-			//
-			// printf("RECEBEU MAO\n");
-			// printf("Jogador que começa a rodada: %s\n", message->prox->info);
+
 			strcpy(IDStart,message->prox->info);
 
-			//if(strcmp(message->prox->info, myPlayer.ID) == 0)
 			if(strcmp(IDStart, myPlayer.ID) == 0)
-				// printf("\n\nOra ora, parece que eu começo desta vez!\n\n");
 
 			strcpy(winnerAtMoment,"");
 			valorWinnerAtMoment=0;
@@ -138,14 +132,12 @@ int main(int argc, char *argv[ ]) {
 			displayCards(cards);
 
 			jogadaDaRodada = findJogada(IDStart, myPlayer, myPartner, players);
-			// printf("\n\n -- jogadaDaRodada: %d -- \n\n", jogadaDaRodada);
 
 			joguei = 0;
 		}
 
 		if(jogadaDaRodada == 0 && contJogadas == jogadaDaRodada && joguei == 0) {
 			indiceCarta = pegarMenorCarta(cards);
-			// printf("jogada: %d, contJogadas: %d\n", jogadaDaRodada, contJogadas);
 
 			jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
 
@@ -169,12 +161,8 @@ int main(int argc, char *argv[ ]) {
 					valorWinnerAtMoment = getPotencia(cartaJogada, vira);
 				}
 			}
-			//
-			// printf("\nwinnerAtMoment: %s - valorWinnerAtMoment: %d\n", winnerAtMoment, valorWinnerAtMoment);
-			// printf("jogada: %d, contJogadas: %d\n", jogadaDaRodada, contJogadas);
 
 			if (jogadaDaRodada == contJogadas) {
-				//printf("\n\nentrou if\n\n");
 			switch(jogadaDaRodada){
 				case 1: {
 					printf("2º jogador a jogar\n");
@@ -223,8 +211,6 @@ int main(int argc, char *argv[ ]) {
 						}
 						else
 							jogaCarta(cards, indiceCarta, rodada, servidor, sockPlayers);
-
-					  printf("%d %d \n",strcmp(players[1].ID,myPlayer.ID)==0 ,strcmp(winnerAtMoment,myPlayer.ID)!=0 );
 					break;
 				}
 
@@ -373,11 +359,6 @@ int main(int argc, char *argv[ ]) {
 
     }
 
-
-		// Servidor envia mensagem de fim da rodada
-		if(strcmp(message->info,"FR") == 0) {
-
-		}
 
     //Destruindo mensagem recebida após cada interação
     message = destroyMessage(message);

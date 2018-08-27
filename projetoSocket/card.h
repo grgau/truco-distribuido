@@ -171,17 +171,14 @@ int pegarMaiorCarta(card *cards) {
 	int indice;
 
 	if(cards[0].card != 0) {
-		printf("\npegarMaiorCarta: maior\n");
 		indice = 0;
 		return indice;
 	}
 	else if(cards[1].card != 0) {
-		printf("\npegarMaiorCarta: medio\n");
 		indice = 1;
 		return indice;
 	}
 	else {
-		printf("\npegarMaiorCarta: menor\n");
 		indice = 2;
 		return indice;
 	}
@@ -192,17 +189,14 @@ int pegarMenorCarta(card *cards) {
 	int indice;
 
 	if(cards[2].card != 0) {	// Se ainda tiver a ultima carta da mao, retorna ela
-		printf("\npegarMenorCarta: menor\n");
 		indice = 2;
 		return indice;
 	}
 	else if (cards[1].card != 0) { // Se ja tiver descartado a ultima carta, retorna a do meio mesmo
-		printf("\npegarMenorCarta: meio\n");
 		indice = 1;
 		return indice;
 	}
 	else {	// Se ja tiver descartado duas, retorna a maior
-		printf("\npegarMenorCarta: maior\n");
 		indice = 0;
 		return indice;
 	}
@@ -213,17 +207,14 @@ int pegarDoMeio(card *cards) {
 	int indice;
 
 	if(cards[1].card != 0) {	// Se ainda tem carta do meio manda do meio
-		printf("\npegarDoMeio: meio\n");
 		indice = 1;
 		return indice;
 	}
 	else if(cards[0].card != 0) {	// Se não tem carta do meio, manda maior mesmo
-		printf("\npegarDoMeio: maior\n");
 		indice = 0;
 		return indice;
 	}
 	else {	// Se não tem nem do meio nem maior manda menor mesmo
-		printf("\npegarDoMeio: menor\n");
 		indice = 2;
 		return indice;
 	}
@@ -385,7 +376,7 @@ void naoAceitaTruco(int servidor){
 	sendData("FORA",NULL,0,servidor);
 }
 
-//Retorna qual jogada estamos da rodada. 
+//Retorna qual jogada estamos da rodada.
 int findJogada(char *IDStart, player myPlayer, player myPartner, player *players) {
 	int i;
 
