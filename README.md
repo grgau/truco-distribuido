@@ -1,5 +1,6 @@
 # sd
-projetos de sistemas distribuidos
+Projetos de sistemas distribuidos:
+Partida de truco distribuida em rede
 
 Add código do leleco
 Compilar:
